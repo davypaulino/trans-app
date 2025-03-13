@@ -1,6 +1,6 @@
 const Btn = () => {
     return (
-        <button>I'm the fuck button</button>
+        <button>Im the fuck button</button>
     );
 }
 
