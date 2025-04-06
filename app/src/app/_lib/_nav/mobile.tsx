@@ -1,0 +1,3 @@
+const setMobileMenuOpen = (flag: boolean) => {
+
+}
