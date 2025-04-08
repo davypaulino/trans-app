@@ -37,10 +37,10 @@ export const NavComponent = () => {
             </div>
 
             <PopoverGroup className="hidden lg:flex lg:gap-x-12">
-                {NavItems.map((item) => (
+                {NavItems.map((item, index) => (
                     item.href === null ?
-                    <NavPopoverComponent item={item} />
-                    : <Link href={item.href ?? ""} className="text-sm/6 font-semibold text-gray-900">
+                    <NavPopoverComponent key={`nav-item-${index}`} item={item} />
+                    : <Link key={`nav-item-${index}`} href={item.href ?? ""} className="text-sm/6 font-semibold text-gray-900">
                         {item.name}
                     </Link>
                 ))}

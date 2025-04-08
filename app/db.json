@@ -52,69 +52,6 @@
                 "maxNumberOfPlayers": 4,
                 "type": 0,
                 "owner": "Eve"
-            },
-            {
-                "id": "6f7g8h9i-6789-0123-4567-fabcde678901",
-                "roomCode": "6f7g8h9i",
-                "roomName": "Room 6",
-                "numberOfPlayers": 7,
-                "maxNumberOfPlayers": 14,
-                "type": 1,
-                "owner": "Frank"
-            },
-            {
-                "id": "7g8h9i0j-7890-1234-5678-abcdef789012",
-                "roomCode": "7g8h9i0j",
-                "roomName": "Room 7",
-                "numberOfPlayers": 4,
-                "maxNumberOfPlayers": 8,
-                "type": 2,
-                "owner": "Grace"
-            },
-            {
-                "id": "8h9i0j1k-8901-2345-6789-bcdefa890123",
-                "roomCode": "8h9i0j1k",
-                "roomName": "Room 8",
-                "numberOfPlayers": 5,
-                "maxNumberOfPlayers": 10,
-                "type": 0,
-                "owner": "Henry"
-            },
-            {
-                "id": "9i0j1k2l-9012-3456-7890-cdefab901234",
-                "roomCode": "9i0j1k2l",
-                "roomName": "Room 9",
-                "numberOfPlayers": 3,
-                "maxNumberOfPlayers": 6,
-                "type": 1,
-                "owner": "Isabelle"
-            },
-            {
-                "id": "0j1k2l3m-0123-4567-8901-defabc012345",
-                "roomCode": "0j1k2l3m",
-                "roomName": "Room 10",
-                "numberOfPlayers": 6,
-                "maxNumberOfPlayers": 12,
-                "type": 2,
-                "owner": "Jack"
-            },
-            {
-                "id": "1k2l3m4n-1234-5678-9012-efabcd123456",
-                "roomCode": "1k2l3m4n",
-                "roomName": "Room 11",
-                "numberOfPlayers": 2,
-                "maxNumberOfPlayers": 4,
-                "type": 0,
-                "owner": "Karen"
-            },
-            {
-                "id": "2l3m4n5o-2345-6789-0123-fabcde234567",
-                "roomCode": "2l3m4n5o",
-                "roomName": "Room 12",
-                "numberOfPlayers": 7,
-                "maxNumberOfPlayers": 14,
-                "type": 1,
-                "owner": "Leo"
             }
         ]
     }

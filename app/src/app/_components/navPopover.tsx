@@ -13,13 +13,12 @@ interface NavPopoverProps {
     className?: string;
 }
 
-
 export const NavPopoverComponent = ({
     item,
     className,
 }: NavPopoverProps) => {
     return (
-        <Popover className="relative">
+        <Popover className={`relative ${className}`}>
             <PopoverButton className="flex items-center gap-x-1 text-sm/6 font-semibold text-gray-900">
                 Game Section
                 <ChevronDownIcon aria-hidden="true" className="size-5 flex-none text-gray-400" />
