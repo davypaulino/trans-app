@@ -42,7 +42,7 @@ export const PlayerItem: React.FC<PlayeritemProps> = ({player, className, owner,
 
 const ExitButton = () => {
     return (
-        <button className="rounded-full flex items-center bg-slate-300 p-1">
+        <button className={`rounded-full flex items-center bg-slate-300 hover:bg-rose-300 p-1 transition ease-in duration-200 hover:scale-102`}>
             <XCircleIcon className="w-6 h-6" />
         </button>
     );

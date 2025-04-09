@@ -6,7 +6,7 @@ interface MatchPlayerProps {
     match: RoomResponseDTO
 }
 
-export const MatchPlayer: React.FC<MatchPlayerProps> = ({match}) => {
+export const MatchPlayers: React.FC<MatchPlayerProps> = ({match}) => {
     return (
         <ul>
             {Array.from({ length: 4 }).map((_, index) => (

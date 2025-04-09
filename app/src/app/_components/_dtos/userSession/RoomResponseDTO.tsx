@@ -1,3 +1,5 @@
+import { ERoomType, RoomTypeKey, RoomTypeValue } from "@/app/_lib/RoomType";
+
 export interface PlayerItemInfoDTO {
     name: string,
     color: string,
@@ -6,6 +8,11 @@ export interface PlayerItemInfoDTO {
 }
 
 export interface RoomResponseDTO {
+    roomType: RoomTypeKey,
+    roomCode: string,
+    roomName: string,
+    maxAmountOfPlayers: number,
+    amountOfPlayers: number,
     owner: string,
     players: PlayerItemInfoDTO[];
 }
