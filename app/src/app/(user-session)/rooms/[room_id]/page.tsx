@@ -6,6 +6,7 @@ import { GetNormalRoom } from "@/app/_lib/_gateways/userSession";
 import { useEffect, useState } from "react";
 import { RoomResponseDTO } from "@/app/_components/_dtos/userSession/RoomResponseDTO";
 import { webSocketRoomManager } from "@/app/_websockets/websocketManager";
+import PlayerStatus from '@/app/_components/playerStatus'
 
 export default function Page() {
     const params = useParams();
@@ -59,6 +60,7 @@ export default function Page() {
     return (
         <section className="container mx-auto w-[80vw] bg-slate-300 rounded-b-lg p-6">
             {roomData ? <MatchRoom match={roomData} /> : <p>Loading room...</p>}
+            <PlayerStatus isConnected={wsConnected} />
         </section>
     );
 }
