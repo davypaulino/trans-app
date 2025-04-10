@@ -8,7 +8,8 @@ interface MatchPlayerProps {
 }
 
 export const MatchPlayers: React.FC<MatchPlayerProps> = ({match}) => {
-    const safePlayers = match.players ?? Array(4).fill({}); // Default 4 empty players
+    const emptyPlayers = Array(match.maxAmountOfPlayers - match.amountOfPlayers).fill(null)
+    const safePlayers = [...match.players, ...emptyPlayers]
     
     return (
         <ul>
@@ -16,7 +17,7 @@ export const MatchPlayers: React.FC<MatchPlayerProps> = ({match}) => {
                 <PlayerItem
                     className="mb-3"
                     key={`player-${index}`}
-                    showExit={true}
+                    showExit={match.owner}
                     player={player}
                 />
             ))}
