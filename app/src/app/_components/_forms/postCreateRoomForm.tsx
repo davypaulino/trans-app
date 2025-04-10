@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react"
 import { generateRandomName, generateRandomCode } from '@/app/_lib/utils';
 import { PostCreateARoom } from "@/app/_lib/_gateways/userSession";
 import { ERoomType, RoomTypeKey, RoomTypeValue } from "@/app/_lib/RoomType";
+import { useRouter } from "next/navigation";
 
 interface PostProps {
     className?: string
@@ -13,14 +14,27 @@ export const PostCreateRoomForm: React.FC<PostProps> = (props) => {
     const [nickname, setNickname] = useState<string>('');
     const [numberOfPlayersOption, setNumberOfPlayersOption] = useState<number[]>([1]);
     const [roomCode, setRoomCode] = useState<string>('');
+    const router = useRouter();
     
     useEffect(() => {
         setNickname(generateRandomName());
         setRoomCode(generateRandomCode());
     }, []);
 
-    const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        PostCreateARoom(event);
+    const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        const response = await PostCreateARoom(event);
+        const responseData = await response.json(); // Parse response JSON
+
+        // Store 'X-User-Id' in localStorage
+        const userId = response.headers.get("X-User-Id");
+        if (userId) {
+            localStorage.setItem("userId", userId);
+        }
+    
+        // Use Next.js router for navigation
+        if (responseData?.roomCode) {
+            router.push(`/rooms/${responseData.roomCode}`); // Navigate dynamically
+        }
     };
 
     const updateNumberOfPlayersOptions = (roomType: number) => {

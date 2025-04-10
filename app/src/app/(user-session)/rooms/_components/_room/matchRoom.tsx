@@ -1,9 +1,10 @@
 import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 import { MatchItemPlayer, MatchItemComponent } from '@/app/(user-session)/rooms/_components/matchItem'
-import { RoomResponseDTO } from "@/app/_components/_dtos/userSession/RoomResponseDTO";
+import { EPrimaryColors, RoomResponseDTO } from "@/app/_components/_dtos/userSession/RoomResponseDTO";
 import { MatchPlayers } from '@/app/(user-session)/rooms/_components/_room/matchPlayers'
 import { ERoomType } from "@/app/_lib/RoomType";
 import { BsCopy } from "react-icons/bs";
+import React from "react";
 
 interface response {
     player_one: MatchItemPlayer,
@@ -51,51 +52,55 @@ const response: RoomResponseDTO = {
     roomType: 0,
     maxAmountOfPlayers: 4,
     amountOfPlayers: 3,
-    owner: "red",
+    owner: EPrimaryColors.red,
     players: [
         {
             name: "Alice",
-            color: "red",
+            color: EPrimaryColors.red,
             urlProfileImage: "https://randomuser.me/api/portraits/women/1.jpg",
             you: false
         },
         {
             name: "Bob",
-            color: "green",
+            color: EPrimaryColors.green,
             urlProfileImage: "https://randomuser.me/api/portraits/men/2.jpg",
             you: true
         },
         {
             name: "Charlie",
-            color: "yellow",
+            color: EPrimaryColors.yellow,
             urlProfileImage: "https://randomuser.me/api/portraits/men/3.jpg",
             you: false
         },
     ]
 }
 
-export const MatchRoom = () => {
+interface MatchRoomProps {
+    match: RoomResponseDTO
+}
+
+export const MatchRoom: React.FC<MatchRoomProps> = ({match}) => {
     return (
         <>
         <div className="flex items-center w-full justify-between mb-6">
             <div>
                 <div className="flex gap-4 items-start justify-start">
-                    <h1 className="text-3xl text-bold">{ERoomType[response.roomType]}: {response.roomName}</h1>
+                    <h1 className="text-3xl text-bold">{ERoomType[match.roomType]}: {match.roomName}</h1>
                     <button className="flex gap-2 items-start text-xs bg-slate-900 hover:bg-slate-700 py-1 px-2 rounded-full text-slate-100 hover:animate-pulse">
                         <BsCopy />
-                        <span>{response.roomCode}</span>
+                        <span>{match.roomCode}</span>
                     </button>
                 </div>
                 <p className="text-sm">Neque porro quisquam est qui dolorem ipsum quia dolor sit amet   </p>
             </div>
             <div className="flex gap-1">
-                <h1 className="text-6xl">{response.amountOfPlayers}/{response.maxAmountOfPlayers}</h1>
+                <h1 className="text-6xl">{match.amountOfPlayers}/{match.maxAmountOfPlayers}</h1>
                 <p className="text-xs">number<br />of players</p>
             </div>
         </div>
         <div  className="flex justify-center items-stretch h-[80vh]">
             <div className="h-full flex flex-col w-1/2 p-6">
-                <MatchPlayers match={response} />
+                <MatchPlayers match={match} />
             </div>
             <div className="mx-4 h-[92%] border-2 rounded-full border-slate-400"></div>
             <div className="h-full flex flex-col w-1/2 p-6">

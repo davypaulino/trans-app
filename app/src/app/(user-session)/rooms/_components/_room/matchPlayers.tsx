@@ -1,21 +1,24 @@
-import { RoomResponseDTO } from "@/app/_components/_dtos/userSession/RoomResponseDTO";
+import { EPrimaryColors, RoomResponseDTO } from "@/app/_components/_dtos/userSession/RoomResponseDTO";
 import { PlayerItem } from "./playerItem";
 import React from "react";
+import { DS } from "@/app/_components/ds";
 
 interface MatchPlayerProps {
     match: RoomResponseDTO
 }
 
 export const MatchPlayers: React.FC<MatchPlayerProps> = ({match}) => {
+    const safePlayers = match.players ?? Array(4).fill({}); // Default 4 empty players
+    
     return (
         <ul>
-            {Array.from({ length: 4 }).map((_, index) => (
+            {safePlayers.map((player, index) => (
                 <PlayerItem
                     className="mb-3"
                     key={`player-${index}`}
-                    owner={match.owner === match.players[index]?.color}
                     showExit={true}
-                    player={match.players[index]} />
+                    player={player}
+                />
             ))}
         </ul>
     );

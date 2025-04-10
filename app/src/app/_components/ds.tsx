@@ -12,8 +12,6 @@ interface IDS {
     playerColors: IPlayerColors
 }
 
-
-
 export const DS: IDS = {
     playerColors: {
         red: {

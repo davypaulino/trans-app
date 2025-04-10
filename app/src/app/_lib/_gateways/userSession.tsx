@@ -2,6 +2,9 @@ import { PaginationResponse } from "@/app/_components/_dtos/paginationResponse"
 import { RequestParamsDto } from "@/app/_components/_dtos/requestParamsDto"
 import { RoomItemDto } from "@/app/_components/_dtos/userSession/roomItemDto"
 import { RoomsPath, Url } from "../gatewaysConfig"
+import React from "react"
+import { RoomResponseDTO } from "@/app/_components/_dtos/userSession/RoomResponseDTO"
+import { Gateway } from "@/app/_middlewares/middlewareHandler"
 
 export const getAllRooms = async (requestParams: RequestParamsDto<string>)
 : Promise<PaginationResponse<RoomItemDto>>  => {
@@ -16,19 +19,22 @@ interface PutPlayerOnRoomRequest {
 }
 
 export const putPlayerOnRoom = async (event: React.FormEvent<HTMLFormElement>)
-: Promise<Response> => {
+: Promise<any> => {
     event.preventDefault();
     const formData = new FormData(event.target as HTMLFormElement);
+
+    const userId = localStorage.getItem("userId") ?? "";
 
     const data: PutPlayerOnRoomRequest = {
         playerName: formData.get('nickname') as string,
         roomCode: formData.get('roomCode') as string
     }
 
-    const response = await fetch(`${Url}/${RoomsPath}`, {
+    const response = await fetch(`${Url}/${RoomsPath}/${data.roomCode}/add-player/`, {
         method: 'PUT',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            "X-User-Id": userId
         },
         body: JSON.stringify(data)
     });
@@ -36,7 +42,7 @@ export const putPlayerOnRoom = async (event: React.FormEvent<HTMLFormElement>)
     return response;
 };
 
-interface PostCreateARoomRequest {
+interface PostCreateARoomRequestDTO {
     createdBy: string,
     roomType: number,
     maxAmountOfPlayers: number,
@@ -49,7 +55,7 @@ export const PostCreateARoom = async (event: React.FormEvent<HTMLFormElement>)
     event.preventDefault();
     const formData = new FormData(event.target as HTMLFormElement);
 
-    const data: PostCreateARoomRequest = {
+    const data: PostCreateARoomRequestDTO = {
         createdBy: formData.get('nickname') as string,
         roomType: Number(formData.get('gameType')),
         maxAmountOfPlayers: Number(formData.get('numberOfPlayers')),
@@ -57,13 +63,35 @@ export const PostCreateARoom = async (event: React.FormEvent<HTMLFormElement>)
         privateRoom: formData.get('isPrivate') === 'true'
     };
 
-    const response = await fetch(`${Url}/${RoomsPath}/new-room/`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
+    const response = await Gateway.Fetch(
+        `${Url}/${RoomsPath}/new-room/`,
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
         },
-        body: JSON.stringify(data)
-    });
+        data,
+        [],
+        []
+    )
 
     return response;
+};
+
+interface UserInfoRequest {
+    [key: string]: string
+}
+
+export const GetNormalRoom = async (roomCode: string): Promise<RoomResponseDTO> => {
+    const userId = localStorage.getItem("userId") ?? "";
+
+    const response = await fetch(`${Url}/${RoomsPath}/${roomCode}/detail/`, {
+        method: 'GET',
+        headers: {
+            'X-User-Id': `${userId}`,
+        },
+    });
+
+    return response.json();
 };

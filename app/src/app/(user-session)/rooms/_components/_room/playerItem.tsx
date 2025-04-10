@@ -1,4 +1,4 @@
-import { PlayerItemInfoDTO } from "@/app/_components/_dtos/userSession/RoomResponseDTO";
+import { PlayerItemInfoDTO, EPrimaryColors } from "@/app/_components/_dtos/userSession/RoomResponseDTO";
 import { XCircleIcon, NoSymbolIcon, UserCircleIcon, TagIcon, ArrowUpCircleIcon } from "@heroicons/react/24/outline";
 import { MinusCircleIcon } from "@heroicons/react/20/solid";
 import { DS } from '@/app/_components/ds';
@@ -6,15 +6,14 @@ import React from "react";
 
 interface PlayeritemProps {
     player?: PlayerItemInfoDTO
-    owner: boolean
     showExit: boolean
     className?: string
 }
 
-export const PlayerItem: React.FC<PlayeritemProps> = ({player, className, owner, showExit}) => {
+export const PlayerItem: React.FC<PlayeritemProps> = ({player, className, showExit}) => {
     if (!player) return (<PlayerItemLabel />);
 
-    const { border, text } = DS.playerColors[player.color] ?? {
+    const { border, text } = DS.playerColors[EPrimaryColors[player.color]] ?? {
         border: "border-gray-400 hover:border-gray-600",
         text: "text-gray-400"
     };
@@ -30,12 +29,12 @@ export const PlayerItem: React.FC<PlayeritemProps> = ({player, className, owner,
                 <div>
                     <p className="text-sm text-bold">{player.name}</p>
                     <div className="text-xs flex gap-2 items-center">
-                        <p>{player.color}</p> |
+                        <p>{EPrimaryColors[player.color]}</p> |
                         {player.you ? <MinusCircleIcon className={`${text} h-4 w-4`}/> : "" }
                     </div>
                 </div>
             </div>
-            { owner ? <IdentityIcon /> : showExit ? <ExitButton /> : "" }
+            { player.owner ? <IdentityIcon /> : showExit ? <ExitButton /> : "" }
         </li>
     );
 }

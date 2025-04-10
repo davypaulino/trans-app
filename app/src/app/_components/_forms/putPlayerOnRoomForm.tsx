@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { putPlayerOnRoom } from '@/app/_lib/_gateways/userSession';
 import { generateRandomName, generateRandomCode } from '@/app/_lib/utils';
+import { useRouter } from 'next/navigation';
 
 interface PutProps {
     className?: string
@@ -11,14 +12,25 @@ interface PutProps {
 export const PutPlayerOnRoomForm: React.FC<PutProps> = (props) => {
     const [nickname, setNickname] = useState<string>('');
     const [roomCode, setRoomCode] = useState<string>('');
+    const router = useRouter()
     
     useEffect(() => {
         setNickname(generateRandomName());
         setRoomCode(generateRandomCode());
     }, []);
     
-    const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        putPlayerOnRoom(event);
+    const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        const response = await putPlayerOnRoom(event);
+        const responseData = await response.json();
+
+        const userId = response.headers.get("X-User-Id");
+        if (userId) {
+            localStorage.setItem("userId", userId);
+        }
+    
+        if (responseData?.roomCode) {
+            router.push(`/rooms/${responseData.roomCode}`);
+        }
     };
 
     return (
