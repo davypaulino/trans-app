@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Pagination } from "@/app/_components/pagination";
 import { PaginationResponse } from "@/app/_components/_dtos/paginationResponse";
 import { RoomItemDto } from "@/app/_components/_dtos/userSession/roomItemDto";
-import { getAllRooms } from "@/app/_lib/_gateways/userSession";
+import { getAllRooms } from "@/app/_lib/_gateways/userSession/roomRepository";
 import { RequestParamsDto } from "@/app/_components/_dtos/requestParamsDto";
 import { RoomsComponent } from "@/app/(user-session)/rooms/_components/rooms";
 import { PutPlayerOnRoomForm } from "@/app/_components/_forms/putPlayerOnRoomForm";

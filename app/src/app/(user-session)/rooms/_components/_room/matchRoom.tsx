@@ -5,7 +5,10 @@ import { MatchPlayers } from '@/app/(user-session)/rooms/_components/_room/match
 import { ERoomType } from "@/app/_lib/RoomType";
 import { BsCopy } from "react-icons/bs";
 import { Button } from '@/app/_components/_basic/Button'
+import { useRouter } from "next/navigation";
+import { RoomRepository } from "@/app/_lib/_gateways/userSession/roomRepository";
 import React from "react";
+import { GameRepository } from "@/app/_lib/_gateways/userSession/gameRepository";
 
 interface response {
     player_one: MatchItemPlayer,
@@ -48,16 +51,21 @@ const items: response[] = [
 ]
 
 interface MatchRoomProps {
-    match: RoomResponseDTO
+    match?: RoomResponseDTO
 }
 
-export const MatchRoom: React.FC<MatchRoomProps> = ({match}) => {
+export const MatchRoom: React.FC<MatchRoomProps> = ({ match }) => {
+    if (!match)
+        return (<h1>looop</h1>);
+
+    const router = useRouter()
+
     return (
         <>
         <div className="flex items-center w-full justify-between mb-6">
             <div>
                 <div className="flex gap-4 items-start justify-start">
-                    <h1 className="text-2xl text-bold"><span className="text-5xl text-black">{ERoomType[match.roomType]}:</span> {match.roomName}</h1>
+                    <h1 className="text-2xl text-bold"><span className="text-5xl text-black">{ ERoomType[match.roomType] }:</span> {match.roomName}</h1>
                     <button className="flex gap-2 items-start text-xs bg-slate-900 hover:bg-slate-700 py-1 px-2 rounded-full text-slate-100 hover:animate-pulse">
                         <BsCopy />
                         <span>{match.roomCode}</span>
@@ -66,13 +74,13 @@ export const MatchRoom: React.FC<MatchRoomProps> = ({match}) => {
                 <p className="text-sm">Neque porro quisquam est qui dolorem ipsum quia dolor sit amet   </p>
             </div>
             <div className="flex gap-1">
-                <h1 className="text-6xl">{match.amountOfPlayers}/{match.maxAmountOfPlayers}</h1>
+                <h1 className="text-6xl">{ match.amountOfPlayers }/{ match.maxAmountOfPlayers }</h1>
                 <p className="text-xs">number<br />of players</p>
             </div>
         </div>
         <div  className="flex justify-center items-stretch content-stretch">
             <div className="h-96 flex flex-col w-1/2 p-6">
-                <MatchPlayers match={match} />
+                <MatchPlayers match={ match } />
             </div>
             <div className="mx-4 h-80 border-2 rounded-full border-slate-400"></div>
             <div className="h-96 flex flex-col gap-2 justify-around w-1/2 p-6">
@@ -99,15 +107,33 @@ export const MatchRoom: React.FC<MatchRoomProps> = ({match}) => {
                     ))} */}
                 </div>
                 <div className="h-1/6 flex justify-end items-center gap-4 w-full">
-                    <Button color="bg-slate-400 hover:bg-slate-300 text-slate-800">Close Game</Button>
-                    <Button>Start Game</Button>
+                {   
+                    match.owner ?
+                    <>
+                        <Button
+                            onClick={ () => RoomRepository.DeleteCloseRoom(match.roomCode) }
+                            color="bg-slate-400 hover:bg-slate-500 text-slate-800">
+                            Close Game
+                        </Button>
+                        <Button
+                            onClick={ () => GameRepository.PostStartGame(match.roomCode) }>
+                            Start Game
+                        </Button>
+                    </> :
+                    <>
+                        <Button 
+                            onClick={ () => RoomRepository.PutExitRoom(match.roomCode, match.ownerColor) }
+                            color="bg-slate-400 hover:bg-slate-500 text-slate-800">
+                            Exit
+                        </Button>
+                    </>
+                }
                 </div>
             </div>
         </div>
         <main>
           <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">{/* Your content */}</div>
         </main>
-
         </>
     );
 }

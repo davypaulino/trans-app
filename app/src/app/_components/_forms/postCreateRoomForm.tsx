@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react"
 import { generateRandomName, generateRandomCode } from '@/app/_lib/utils';
-import { PostCreateARoom } from "@/app/_lib/_gateways/userSession";
+import { PostCreateARoom } from "@/app/_lib/_gateways/userSession/roomRepository";
 import { ERoomType, RoomTypeKey, RoomTypeValue } from "@/app/_lib/RoomType";
 import { useRouter } from "next/navigation";
 

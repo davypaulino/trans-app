@@ -4,21 +4,28 @@ import React from "react";
 import { DS } from "@/app/_components/ds";
 
 interface MatchPlayerProps {
-    match: RoomResponseDTO
+    match?: RoomResponseDTO
 }
 
 export const MatchPlayers: React.FC<MatchPlayerProps> = ({match}) => {
-    const emptyPlayers = Array(match.maxAmountOfPlayers - match.amountOfPlayers).fill(null)
-    const safePlayers = [...match.players, ...emptyPlayers]
-    
+    const numberOfPlayers = match
+        ? Math.max(0, match.maxAmountOfPlayers - match.amountOfPlayers)
+        : 2;
+
+    const emptyPlayers = Array(numberOfPlayers).fill(null)
+    const safePlayers = match
+        ? [...match.players, ...emptyPlayers]
+        : [...emptyPlayers];
+
     return (
         <ul>
             {safePlayers.map((player, index) => (
                 <PlayerItem
                     className="mb-3"
                     key={`player-${index}`}
-                    showExit={match.owner}
+                    showExit={(!match) ? false : match.owner}
                     player={player}
+                    roomCode={match?.roomCode}
                 />
             ))}
         </ul>

@@ -3,14 +3,22 @@ import { XCircleIcon, NoSymbolIcon, UserCircleIcon, TagIcon, ArrowUpCircleIcon }
 import { MinusCircleIcon } from "@heroicons/react/20/solid";
 import { DS } from '@/app/_components/ds';
 import React from "react";
+import { RoomRepository } from "@/app/_lib/_gateways/userSession/roomRepository";
 
 interface PlayeritemProps {
     player?: PlayerItemInfoDTO
     showExit: boolean
     className?: string
+    roomCode: string | undefined
 }
 
-export const PlayerItem: React.FC<PlayeritemProps> = ({player, className, showExit}) => {
+export const PlayerItem: React.FC<PlayeritemProps> = (
+{
+    player,
+    className,
+    showExit,
+    roomCode
+}) => {
     if (!player) return (<PlayerItemLabel />);
 
     const { border, text } = DS.playerColors[EPrimaryColors[player.color]] ?? {
@@ -34,14 +42,29 @@ export const PlayerItem: React.FC<PlayeritemProps> = ({player, className, showEx
                     </div>
                 </div>
             </div>
-            { player.owner ? <IdentityIcon /> : showExit ? <ExitButton /> : "" }
+            {
+                player.owner ?
+                <IdentityIcon /> :
+                showExit ?
+                    <ExitButton
+                        color={player.color}
+                        roomCode={roomCode ?? ""} /> :
+                    ""
+            }
         </li>
     );
 }
 
-const ExitButton = () => {
+interface ExitButtonProps {
+    roomCode: string
+    color: number
+}
+
+const ExitButton: React.FC<ExitButtonProps> = ({roomCode, color}) => {
     return (
-        <button className={`rounded-full flex items-center bg-slate-300 hover:bg-rose-300 p-1 transition ease-in duration-200 hover:scale-102`}>
+        <button
+            onClick={() => RoomRepository.PutExitRoom(roomCode, color)}
+            className={`rounded-full flex items-center bg-slate-300 hover:bg-rose-300 p-1 transition ease-in duration-200 hover:scale-102`}>
             <XCircleIcon className="w-6 h-6" />
         </button>
     );

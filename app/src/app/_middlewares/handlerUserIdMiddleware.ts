@@ -2,9 +2,9 @@ import { MiddlewareResponse } from "./middlewareResponse";
 
 export async function HandlerUserIdMiddlewareAfter(request: any, response: any): Promise<MiddlewareResponse> {
     const userId = response.headers.get("X-User-Id");
-    if (userId) {
-        localStorage.setItem("userId", userId);
-    }
+    const userColor = response.headers.get("X-User-Color");
+    if (userId && userId != "") localStorage.setItem("userId", userId);
+    if (userColor && userColor != "") localStorage.setItem("userColor", userColor);
     return {
         pass: true,
         response: { },

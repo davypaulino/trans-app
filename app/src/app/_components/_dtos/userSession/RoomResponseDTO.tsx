@@ -24,4 +24,5 @@ export interface RoomResponseDTO {
     amountOfPlayers: number,
     players: PlayerItemInfoDTO[];
     owner: boolean,
+    ownerColor: EPrimaryColors
 }

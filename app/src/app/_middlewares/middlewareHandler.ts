@@ -1,3 +1,4 @@
+import { Handler403MiddlewareAfter } from "./handler403Middleware";
 import { HandlerUserIdMiddlewareAfter, HandlerUserIdMiddlewareBefore } from "./handlerUserIdMiddleware";
 import { MiddlewareResponse } from "./middlewareResponse";
 
@@ -11,8 +12,15 @@ async function Fetch(
     const request: any = { headers: options.headers || {}, data: {} };
     let updatedPayload = payload;
 
-    middlewaresAfter = [...middlewaresAfter, HandlerUserIdMiddlewareAfter]
-    middlewaresBefore = [...middlewaresBefore, HandlerUserIdMiddlewareBefore]
+    middlewaresAfter = [
+        ...middlewaresAfter,
+        HandlerUserIdMiddlewareAfter,
+        Handler403MiddlewareAfter
+    ]
+    middlewaresBefore = [
+        ...middlewaresBefore,
+        HandlerUserIdMiddlewareBefore,
+    ]
 
     for (const middlewareFunction of middlewaresBefore) {
         const result: MiddlewareResponse = await middlewareFunction(request, updatedPayload);

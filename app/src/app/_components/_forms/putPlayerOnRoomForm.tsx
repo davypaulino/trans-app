@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react';
-import { putPlayerOnRoom } from '@/app/_lib/_gateways/userSession';
+import { putPlayerOnRoom } from '@/app/_lib/_gateways/userSession/roomRepository';
 import { generateRandomName, generateRandomCode } from '@/app/_lib/utils';
 import { useRouter } from 'next/navigation';
 

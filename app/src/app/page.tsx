@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useState, useEffect } from "react";
 import { PaginationResponse } from "./_components/_dtos/paginationResponse";
 import { RoomItemDto } from "./_components/_dtos/userSession/roomItemDto";
-import { getAllRooms } from "./_lib/_gateways/userSession";
+import { getAllRooms } from "./_lib/_gateways/userSession/roomRepository";
 import { RequestParamsDto } from "@/app/_components/_dtos/requestParamsDto";
 import { ModalComponent } from "@/app/_components/modal";
 import { PuzzlePieceIcon, FingerPrintIcon, IdentificationIcon  } from '@heroicons/react/24/outline';

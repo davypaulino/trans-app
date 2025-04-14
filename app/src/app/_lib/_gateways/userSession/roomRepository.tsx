@@ -1,10 +1,11 @@
 import { PaginationResponse } from "@/app/_components/_dtos/paginationResponse"
 import { RequestParamsDto } from "@/app/_components/_dtos/requestParamsDto"
 import { RoomItemDto } from "@/app/_components/_dtos/userSession/roomItemDto"
-import { RoomsPath, Url } from "../gatewaysConfig"
+import { RoomsPath, Url } from "../../gatewaysConfig"
 import React from "react"
 import { RoomResponseDTO } from "@/app/_components/_dtos/userSession/RoomResponseDTO"
 import { Gateway } from "@/app/_middlewares/middlewareHandler"
+import { ErrorResposeDto } from "@/app/_components/_dtos/userSession/ErrorResponseDto"
 
 export const getAllRooms = async (requestParams: RequestParamsDto<string>)
 : Promise<PaginationResponse<RoomItemDto>>  => {
@@ -83,7 +84,7 @@ interface UserInfoRequest {
     [key: string]: string
 }
 
-export const GetNormalRoom = async (roomCode: string): Promise<RoomResponseDTO> => {
+export const GetNormalRoom = async (roomCode: string): Promise<RoomResponseDTO | ErrorResposeDto> => {
     const userId = localStorage.getItem("userId") ?? "";
 
     const response = await fetch(`${Url}/${RoomsPath}/${roomCode}/detail/`, {
@@ -95,3 +96,39 @@ export const GetNormalRoom = async (roomCode: string): Promise<RoomResponseDTO> 
 
     return response.json();
 };
+
+const DeleteCloseRoom = async (roomCode: string): Promise<void> => {
+    await Gateway.Fetch(
+        `${Url}/${RoomsPath}/${roomCode}/delete`,
+        {
+            method: 'DELETE',
+        },
+        null,
+        [],
+        []
+    )
+}
+
+const PostStartGame = async ():Promise<void> => {
+
+}
+
+const PutExitRoom = async (roomCode: string, color: number):Promise<void> => {
+    await Gateway.Fetch(
+        `${Url}/${RoomsPath}/${roomCode}/${color}/remove-player/`,
+        {
+            method: 'DELETE',
+        },
+        null,
+        [],
+        []
+    )
+}
+
+export const RoomRepository = {
+    GetNormalRoom,
+    PostCreateARoom,
+    DeleteCloseRoom,
+    PostStartGame,
+    PutExitRoom
+}

@@ -2,11 +2,12 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { MatchRoom } from "../_components/_room/matchRoom";
-import { GetNormalRoom } from "@/app/_lib/_gateways/userSession";
+import { GetNormalRoom } from "@/app/_lib/_gateways/userSession/roomRepository";
 import { useEffect, useState } from "react";
 import { RoomResponseDTO } from "@/app/_components/_dtos/userSession/RoomResponseDTO";
 import { webSocketRoomManager } from "@/app/_websockets/websocketManager";
 import PlayerStatus from '@/app/_components/playerStatus'
+import { ErrorResposeDto } from "@/app/_components/_dtos/userSession/ErrorResponseDto";
 
 export default function Page() {
     const params = useParams();
@@ -14,16 +15,24 @@ export default function Page() {
     const [wsConnected, setWsConnected] = useState<boolean>(false)
     const [roomData, setRoomData] = useState<RoomResponseDTO | null>(null);
 
+    const isRoomResponseDTO = (response: any): response is RoomResponseDTO => {
+        return response && typeof response === "object" && "roomName" in response && "roomId" in response;
+    };
+
     useEffect(() => {
         const fetchRoom = async () => {
             if (params.room_id) {
-                const response: RoomResponseDTO = await GetNormalRoom(params.room_id as string);
-                setRoomData(response);
+                const response: RoomResponseDTO | ErrorResposeDto = await GetNormalRoom(params.room_id as string);
+                if (isRoomResponseDTO(response)) {
+                    setRoomData(response);
+                    return
+                }
             }
         };
 
         fetchRoom();
         const userId: string = localStorage.getItem("userId") ?? ""
+        const userColor: number = Number(localStorage.getItem("userColor")) ?? 0
         const socket: WebSocket = webSocketRoomManager.connect(userId, params.room_id as string)
 
         socket.onopen = () => {
@@ -33,15 +42,14 @@ export default function Page() {
 
         socket.onmessage = (event: MessageEvent) => {
             const data = JSON.parse(event.data);
-
-            if (data.type === "delete_room" || (data.type === "player_list_update" && data.userRemoved === userId)) {
+            if (data.type === "delete_room" || (data.type === "player_list_update" && data.userRemoved === userColor)) {
                 localStorage.removeItem("userId");
                 localStorage.removeItem("roomCode");
                 router.push("/home")
             } else if (data.type === "player_list_update") {
                 fetchRoom()
             } else if (data.type === "game.started") {
-                router.push(`/games/${123}`)
+                router.push(`/games/${data.gameId}`)
             }
         };
 
