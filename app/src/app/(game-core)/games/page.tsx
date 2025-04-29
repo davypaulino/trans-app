@@ -27,6 +27,11 @@ const ThreeScene: React.FC = () => {
       const loader = new THREE.ObjectLoader();
       const scene = loader.parse(sceneJson.scene);
 
+      let ball = scene.getObjectByName('Ball');
+        let direction = new THREE.Vector3(Math.random() - 0.5, 0, Math.random() - 0.5).normalize();
+        const speed = 1.5; // unidades por segundo
+
+
       // Get camera
       const cameraObj = scene.getObjectByName('PerspectiveCamera');
       let camera: THREE.PerspectiveCamera;
@@ -45,6 +50,27 @@ const ThreeScene: React.FC = () => {
       // Animate
       const clock = new THREE.Clock();
       const animate = () => {
+        if (ball) {
+            const delta = clock.getDelta();
+          
+            // Atualiza posição da bola
+            ball.position.add(direction.clone().multiplyScalar(speed * delta));
+          
+            // Rebater nas paredes
+            if (ball.position.x < -3 || ball.position.x > 3) direction.x = -direction.x;
+            if (ball.position.z < -2 || ball.position.z > 2) direction.z = -direction.z;
+          
+            // Colisão com paddles
+            const paddles = [scene.getObjectByName('Pad 1'), scene.getObjectByName('Pad 2')];
+            paddles.forEach(pad => {
+              if (!pad) return;
+              const distance = ball.position.distanceTo(pad.position);
+              if (distance < 0.6) {
+                direction.reflect(new THREE.Vector3(1, 0, 0)); // Simples: inverte x
+              }
+            });
+        }
+          
         requestAnimationFrame(animate);
         renderer.render(scene, camera);
       };
