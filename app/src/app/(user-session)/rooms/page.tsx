@@ -8,6 +8,7 @@ import { getAllRooms } from "@/app/_lib/_gateways/userSession/roomRepository";
 import { RequestParamsDto } from "@/app/_components/_dtos/requestParamsDto";
 import { RoomsComponent } from "@/app/(user-session)/rooms/_components/rooms";
 import { PutPlayerOnRoomForm } from "@/app/_components/_forms/putPlayerOnRoomForm";
+import { ToastComponent } from "@/app/_components/toastComponent";
 
 export default function Page() {
   const [pagination, setPagination] = useState<PaginationResponse<RoomItemDto> | null>(null);
@@ -41,6 +42,7 @@ export default function Page() {
       </div>
       <Pagination pagination={pagination} handlerPagination={handler}>
         <RoomsComponent rooms={rooms}/>
+        <ToastComponent />
       </Pagination>
     </section>
   );
