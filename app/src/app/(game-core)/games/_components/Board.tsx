@@ -1,12 +1,21 @@
 'use client'
-import { useEffect, useRef, useState } from "react";
+
+import { ComponentType, SVGProps, useEffect, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import type { Player, Ball, FieldAttributes, GameState } from '@/app/_components/_dtos/gameState'
 import { PlayerItem } from "@/app/(user-session)/rooms/_components/_room/playerItem";
-import { RoomResponseDTO } from "@/app/_components/_dtos/userSession/RoomResponseDTO";
+import { PlayerItemInfoDTO, RoomResponseDTO } from "@/app/_components/_dtos/userSession/RoomResponseDTO";
 import { ErrorResposeDto } from "@/app/_components/_dtos/userSession/ErrorResponseDto";
 import { GetNormalRoom } from "@/app/_lib/_gateways/userSession/roomRepository";
+import { FaceFrownIcon, StarIcon } from "@heroicons/react/20/solid";
 import React from "react";
+import { ModalComponent } from "@/app/_components/modal";
+import Link from "next/link";
+
+interface GameFinish {
+    title: string
+    icon: ComponentType<SVGProps<SVGSVGElement>>
+}
 
 export const Board: React.FC = () => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -16,6 +25,14 @@ export const Board: React.FC = () => {
     const [playerOneScore, setPlayerOneScore] = useState<number>(0)
     const [playerTwoScore, setPlayerTwoScore] = useState<number>(0)
     const [roomData, setRoomData] = useState<RoomResponseDTO | null>(null);
+    const [gameFinish, setGameFinish] = useState<boolean>(false)
+
+    const mockGameFinishResult = {
+        title: "Você Venceu",
+        icon: StarIcon, // Simulando um ícone JSX
+    };
+    
+    const [gameFinishResult, setGameFinishResult] = useState<GameFinish>(mockGameFinishResult)
 
     const isRoomResponseDTO = (response: any): response is RoomResponseDTO => {
         return response && typeof response === "object" && "roomName" in response && "roomId" in response;
@@ -51,6 +68,17 @@ export const Board: React.FC = () => {
             ctx.fillStyle = color;
             ctx.fillRect(x, y, w, h);
         };
+
+        const showModal = (winner: string) => {
+            fetchRoom()
+            setGameFinishResult({
+                title: (winner === localStorage.getItem("userId") as string) ? "Você Venceu" : "Você Perdeu",
+                icon: (winner === localStorage.getItem("userId") as string) ? StarIcon : FaceFrownIcon,
+            });
+            setGameFinish(true)
+        }
+
+        showModal(localStorage.getItem("userId") as string)
 
         drawRect(0, 0, canvas.width, canvas.height, "gray");
 
@@ -128,7 +156,7 @@ export const Board: React.FC = () => {
             }
 
             if (data.type === "game_finished") {
-                alert(data.winner === userId ? "Você venceu!" : "Você perdeu!");
+                showModal(data.winner)
             }
 
             if (data.type === "update_score") {
@@ -175,6 +203,28 @@ export const Board: React.FC = () => {
             <div className="flex mt-2">
                 <ScoreBoard playerScoreOne={playerOneScore} playerScoreTwo={playerTwoScore} match={roomData ?? null} />
             </div>
+            <ModalComponent
+                title={gameFinishResult.title}
+                open={gameFinish}
+                setOpen={setGameFinish}
+                icon={gameFinishResult.icon}
+                description="Create your account and start play now.">
+                <div className="mx-auto">
+                    <div className="p-6 gap-2 flex justify-between items-center gap-10">
+                        <PlayerItemSimple player={roomData?.players[1]} score={playerOneScore}/>
+                        <p className="text-5xl font-semibold">X</p>
+                        <PlayerItemSimple player={roomData?.players[2]} score={playerTwoScore}/>
+                    </div>
+                    <div className="flex justify-center mt-6">
+                        <Link 
+                            href="/home" 
+                            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+                        >
+                            Voltar para Home
+                        </Link>
+                    </div>
+                </div>
+            </ModalComponent>
         </>
     );
 };
@@ -218,5 +268,34 @@ export const ScoreBoard: React.FC<ScoreBoardProps> = ({match, playerScoreOne, pl
                 </React.Fragment>
             ))}
         </ul>
+    );
+}
+
+interface PlayerItemSimpleProps {
+    player?: PlayerItemInfoDTO
+    score: number
+}
+
+const PlayerItemSimple: React.FC<PlayerItemSimpleProps> = ({player, score}) => {
+    return (
+        <div className="flex flex-col justify-center items-center space-y-2">
+            {/* Área do Jogador */}
+            <div className="flex flex-col justify-center items-center">
+                <img 
+                    className="mb-1 w-12 h-12 rounded-full object-cover" 
+                    src={player?.urlProfileImage} 
+                    alt={player?.name} 
+                />
+                <p className="font-semibold">{player?.name}</p>
+            </div>
+
+            {/* Score */}
+            <p className="text-sm flex items-center space-x-2">
+                <span className="font-medium">Score:</span>
+                <span className="bg-slate-200 px-2 py-1 rounded-md text-gray-800">
+                    {score}
+                </span>
+            </p>
+        </div>
     );
 }
