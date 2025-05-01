@@ -9,14 +9,15 @@ import { RequestParamsDto } from "@/app/_components/_dtos/requestParamsDto";
 import { RoomsComponent } from "@/app/(user-session)/rooms/_components/rooms";
 import { PutPlayerOnRoomForm } from "@/app/_components/_forms/putPlayerOnRoomForm";
 import { ToastComponent } from "@/app/_components/toastComponent";
+import SearchInputComponent from "@/app/_components/searchInputComponent";
 
 export default function Page() {
   const [pagination, setPagination] = useState<PaginationResponse<RoomItemDto> | null>(null);
   const [rooms, setRooms] = useState<RoomItemDto[] | null>(null)
 
-  const fetchDataRooms = async (page: number) => {
+  const fetchDataRooms = async (page: number, filter?: string) => {
       setRooms(null);
-      const requestParams: RequestParamsDto<string> = { page: page };
+      const requestParams: RequestParamsDto<string> = { page: page, filters: filter };
       const data = await getAllRooms(requestParams);
       console.log(data)
       setPagination(data);
@@ -32,7 +33,9 @@ export default function Page() {
       fetchDataRooms(page);
   };
 
-  console.log(rooms)
+  const searchHandler = async (query: string) => {
+    fetchDataRooms(1, query)
+  }
 
   return (
     <section className="container mx-auto flex justify-around">
@@ -40,10 +43,13 @@ export default function Page() {
         <h1 className="text-2xl text-center mb-3 font-bold">Enter in a Room</h1>
         <PutPlayerOnRoomForm className="min-w-[300] max-w-[600] max-h-[500] mx-auto shadow-lg shadow-slate-300/50" />
       </div>
-      <Pagination pagination={pagination} handlerPagination={handler}>
-        <RoomsComponent rooms={rooms}/>
-        <ToastComponent />
-      </Pagination>
+      <div>
+        <SearchInputComponent placeholder="Search for rooms" onSearch={searchHandler}/>
+        <Pagination pagination={pagination} handlerPagination={handler}>
+          <RoomsComponent rooms={rooms}/>
+          <ToastComponent />
+        </Pagination>
+      </div>
     </section>
   );
 }

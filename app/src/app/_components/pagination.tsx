@@ -50,9 +50,9 @@ function Pagination<T>({
                     </span>{' '}
                     to{' '}
                     <span className="font-medium">
-                        {Math.min(pagination?.currentPage * pagination?.pageSize, pagination?.totalPages)}
+                        {Math.min(pagination?.currentPage * pagination?.pageSize, pagination.totalItems)}
                     </span>{' '}
-                    of <span className="font-medium">{pagination?.totalPages}</span> results
+                    of <span className="font-medium">{pagination.totalItems}</span> results
                     </p>
                 </div>
                 <div>

@@ -7,6 +7,7 @@ interface PaginationResponse<T> {
     hasPreviousPage: boolean;
     totalPages: number;
     content:  T[];
+    totalItems: number;
 }
 
 export type { PaginationResponse };

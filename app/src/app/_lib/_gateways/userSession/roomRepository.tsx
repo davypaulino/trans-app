@@ -9,7 +9,8 @@ import { ErrorResposeDto } from "@/app/_components/_dtos/userSession/ErrorRespon
 
 export const getAllRooms = async (requestParams: RequestParamsDto<string>)
 : Promise<PaginationResponse<RoomItemDto>>  => {
-    const data = await fetch(`${Url}/${RoomsPath}/?page=${requestParams.page}&size=${requestParams.size ?? 5}`);
+    console.log(requestParams)
+    const data = await fetch(`${Url}/${RoomsPath}/?page=${requestParams.page}&size=${requestParams?.size ?? 4}&filter=${requestParams.filters ?? ""}`);
     const posts: PaginationResponse<RoomItemDto> = await data.json()
     return posts; 
 }
