@@ -22,6 +22,7 @@ export default function Page() {
     useEffect(() => {
         const fetchRoom = async () => {
             if (params.room_id) {
+                localStorage.setItem("roomCode", params.room_id as string)
                 const response: RoomResponseDTO | ErrorResposeDto = await GetNormalRoom(params.room_id as string);
                 if (isRoomResponseDTO(response)) {
                     setRoomData(response);

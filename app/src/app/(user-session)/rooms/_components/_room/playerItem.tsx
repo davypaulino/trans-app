@@ -9,7 +9,7 @@ interface PlayeritemProps {
     player?: PlayerItemInfoDTO
     showExit: boolean
     className?: string
-    roomCode: string | undefined
+    roomCode?: string
 }
 
 export const PlayerItem: React.FC<PlayeritemProps> = (
@@ -27,7 +27,7 @@ export const PlayerItem: React.FC<PlayeritemProps> = (
     };
 
     return (
-        <li className={`${className} p-2 bg-slate-200 flex justify-between items-center rounded-lg`}>
+        <li className={`${className} p-2 bg-slate-200 flex gap-2 justify-between items-center rounded-lg`}>
             <div className={`flex items-center gap-2`}>
                 <img 
                 src={player.urlProfileImage} 

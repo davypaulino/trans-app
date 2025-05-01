@@ -60,8 +60,6 @@ export const MatchRoom: React.FC<MatchRoomProps> = ({ match }) => {
     if (!match)
         return (<h1>looop</h1>);
 
-    const router = useRouter()
-
     return (
         <>
         <ToastComponent />

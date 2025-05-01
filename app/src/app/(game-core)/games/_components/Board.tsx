@@ -2,21 +2,44 @@
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import type { Player, Ball, FieldAttributes, GameState } from '@/app/_components/_dtos/gameState'
+import { PlayerItem } from "@/app/(user-session)/rooms/_components/_room/playerItem";
+import { RoomResponseDTO } from "@/app/_components/_dtos/userSession/RoomResponseDTO";
+import { ErrorResposeDto } from "@/app/_components/_dtos/userSession/ErrorResponseDto";
+import { GetNormalRoom } from "@/app/_lib/_gateways/userSession/roomRepository";
+import React from "react";
 
 export const Board: React.FC = () => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const socketRef = useRef<WebSocket | null>(null);
     const params = useParams();
     const [actualGamaState, setActualGamaState] = useState<GameState | null>(null)
+    const [playerOneScore, setPlayerOneScore] = useState<number>(0)
+    const [playerTwoScore, setPlayerTwoScore] = useState<number>(0)
+    const [roomData, setRoomData] = useState<RoomResponseDTO | null>(null);
+
+    const isRoomResponseDTO = (response: any): response is RoomResponseDTO => {
+        return response && typeof response === "object" && "roomName" in response && "roomId" in response;
+    };
 
     useEffect(() => {
+        const fetchRoom = async () => {
+            if (localStorage.getItem("roomCode")) {
+                const response: RoomResponseDTO | ErrorResposeDto = await GetNormalRoom(localStorage.getItem("roomCode") as string);
+                if (isRoomResponseDTO(response)) {
+                    setRoomData(response);
+                    return
+                }
+            }
+        };
+
+        fetchRoom()
+
         const canvas = canvasRef.current;
         if (!canvas) return;
 
         const ctx = canvas.getContext("2d");
         if (!ctx) return;
 
-        // Tamanho fixo
         canvas.width = 700;
         canvas.height = 400;
 
@@ -107,6 +130,16 @@ export const Board: React.FC = () => {
             if (data.type === "game_finished") {
                 alert(data.winner === userId ? "Você venceu!" : "Você perdeu!");
             }
+
+            if (data.type === "update_score") {
+                console.log(data)
+                if (data.playerColor === 1) {
+                    setPlayerOneScore(data.playerScore)
+                } 
+                if (data.playerColor === 2) {
+                    setPlayerTwoScore(data.playerScore)
+                }
+            }
         };
 
         socket.onclose = () => {
@@ -139,6 +172,51 @@ export const Board: React.FC = () => {
             <div>
                 <canvas className="mx-auto" ref={canvasRef} style={{ display: "block" }} />
             </div>
+            <div className="flex mt-2">
+                <ScoreBoard playerScoreOne={playerOneScore} playerScoreTwo={playerTwoScore} match={roomData ?? null} />
+            </div>
         </>
     );
 };
+
+interface ScoreBoardProps {
+    match: RoomResponseDTO | null
+    playerScoreOne: number
+    playerScoreTwo: number
+}
+
+export const ScoreBoard: React.FC<ScoreBoardProps> = ({match, playerScoreOne, playerScoreTwo}) => {
+    const numberOfPlayers = match
+        ? Math.max(0, match.maxAmountOfPlayers - match.amountOfPlayers)
+        : 2;
+
+    const emptyPlayers = Array(numberOfPlayers).fill(null)
+    const safePlayers = match
+        ? [...match.players, ...emptyPlayers]
+        : [...emptyPlayers];
+
+    const middleIndex = Math.floor(safePlayers.length / 2);
+
+    return (
+        <ul className="flex gap-4 justify-center items-center p-2">
+            {safePlayers.map((player, index) => (
+                <React.Fragment key={`player-${index}`}>
+                    {index === middleIndex && (
+                        <>
+                            <li className="m-0 text-4xl font-semibold text-white">{playerScoreOne}</li>
+                            <li className="m-0 text-4xl font-semibold text-white">X</li>
+                            <li className="m-0 text-4xl font-semibold text-white">{playerScoreTwo}</li>
+                        </>
+                    )}
+
+                    {/* Renderizando cada jogador */}
+                    <PlayerItem
+                        showExit={false}
+                        player={player}
+                        roomCode={match?.roomCode}
+                    />
+                </React.Fragment>
+            ))}
+        </ul>
+    );
+}
