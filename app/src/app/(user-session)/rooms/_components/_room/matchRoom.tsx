@@ -9,6 +9,8 @@ import { useRouter } from "next/navigation";
 import { RoomRepository } from "@/app/_lib/_gateways/userSession/roomRepository";
 import React from "react";
 import { GameRepository } from "@/app/_lib/_gateways/userSession/gameRepository";
+import BtnCopy from "@/app/_components/btnCopy";
+import { ToastComponent } from "@/app/_components/toastComponent";
 
 interface response {
     player_one: MatchItemPlayer,
@@ -62,14 +64,16 @@ export const MatchRoom: React.FC<MatchRoomProps> = ({ match }) => {
 
     return (
         <>
+        <ToastComponent />
         <div className="flex items-center w-full justify-between mb-6">
             <div>
                 <div className="flex gap-4 items-start justify-start">
                     <h1 className="text-2xl text-bold"><span className="text-5xl text-black">{ ERoomType[match.roomType] }:</span> {match.roomName}</h1>
-                    <button className="flex gap-2 items-start text-xs bg-slate-900 hover:bg-slate-700 py-1 px-2 rounded-full text-slate-100 hover:animate-pulse">
-                        <BsCopy />
-                        <span>{match.roomCode}</span>
-                    </button>
+                    <BtnCopy
+                        roomCode={match.roomCode}
+                        showCode={true}
+                        className="flex gap-2 items-start text-xs bg-slate-900 hover:bg-slate-700 py-1 px-2 rounded-full text-slate-100 hover:animate-pulse"
+                        />
                 </div>
                 <p className="text-sm">Neque porro quisquam est qui dolorem ipsum quia dolor sit amet   </p>
             </div>

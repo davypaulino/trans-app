@@ -5,9 +5,10 @@ import { showToast } from "@/app/_components/toastComponent";
 interface BtnCopyProps {
     roomCode: string;
     className?: string
+    showCode?: boolean
 }
 
-const BtnCopy: React.FC<BtnCopyProps> = ({ roomCode, className }) => {
+const BtnCopy: React.FC<BtnCopyProps> = ({ roomCode, className, showCode }) => {
     const [copied, setCopied] = useState(false);
 
     const handleCopy = () => {
@@ -22,9 +23,10 @@ const BtnCopy: React.FC<BtnCopyProps> = ({ roomCode, className }) => {
     return (
         <button 
             onClick={handleCopy} 
-            className={`flex items-center space-x-2 p-2 bg-blue-500 text-white rounded hover:bg-blue-600 ${className}`}
+            className={`${className}`}
         >
             <BsCopy />
+            {showCode ? <span>{roomCode}</span> : ""}
         </button>
     );
 }

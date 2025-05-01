@@ -29,6 +29,8 @@ export const Board: React.FC = () => {
             ctx.fillRect(x, y, w, h);
         };
 
+        drawRect(0, 0, canvas.width, canvas.height, "gray");
+
         const drawCircle = (x: number, y: number, radius: number, color: string) => {
             ctx.fillStyle = color;
             ctx.beginPath();
@@ -37,7 +39,6 @@ export const Board: React.FC = () => {
         };
 
         const render = () => {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
             drawRect(0, 0, canvas.width, canvas.height, "gray");
             drawRect(leftPaddle.x, leftPaddle.y, leftPaddle.width, leftPaddle.height, "red");
             drawRect(rightPaddle.x, rightPaddle.y, rightPaddle.width, rightPaddle.height, "blue");

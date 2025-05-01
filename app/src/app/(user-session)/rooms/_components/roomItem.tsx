@@ -12,7 +12,7 @@ const RoomItemComponent: FC<Props> = ({content}) => {
     return (
         <li className="flex justify-between gap-x-6 py-5">
             <div className="flex min-w-0 gap-x-4 items-center">
-                <BtnCopy roomCode={content.roomCode}/>
+                <BtnCopy className="flex items-center space-x-2 p-2 bg-blue-500 text-white rounded hover:bg-blue-600" roomCode={content.roomCode}/>
                 <div className="min-w-0 flex-auto">
                     <p className="text-sm/6 font-semibold text-gray-900">{ERoomType[content.type]}: {content.roomName}</p>
                     <p className="mt-1 truncate text-xs/5 text-gray-500">{"code: " + content.roomCode}</p>
