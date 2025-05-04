@@ -78,7 +78,7 @@ export const Board: React.FC = () => {
             setGameFinish(true)
         }
 
-        showModal(localStorage.getItem("userId") as string)
+        // showModal(localStorage.getItem("userId") as string)
 
         drawRect(0, 0, canvas.width, canvas.height, "gray");
 
@@ -241,8 +241,9 @@ export const ScoreBoard: React.FC<ScoreBoardProps> = ({match, playerScoreOne, pl
         : 2;
 
     const emptyPlayers = Array(numberOfPlayers).fill(null)
+    const playerList = match ? Object.values(match.players) : [];
     const safePlayers = match
-        ? [...match.players, ...emptyPlayers]
+        ? [...playerList, ...emptyPlayers]
         : [...emptyPlayers];
 
     const middleIndex = Math.floor(safePlayers.length / 2);

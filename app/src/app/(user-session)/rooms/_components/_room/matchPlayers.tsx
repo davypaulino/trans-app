@@ -13,8 +13,9 @@ export const MatchPlayers: React.FC<MatchPlayerProps> = ({match}) => {
         : 2;
 
     const emptyPlayers = Array(numberOfPlayers).fill(null)
+    const playerList = match ? Object.values(match.players) : [];
     const safePlayers = match
-        ? [...match.players, ...emptyPlayers]
+        ? [...playerList, ...emptyPlayers]
         : [...emptyPlayers];
 
     return (

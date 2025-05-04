@@ -49,6 +49,8 @@ export const PostCreateRoomForm: React.FC<PostProps> = (props) => {
         setNumberOfPlayersOption([1]);
     }
 
+    const [selectedGameType, setSelectedGameType] = useState(2);
+
     return (
         <form onSubmit={onSubmit} className="space-y-4 p-4">
             {/* Nickname Input */}
@@ -70,9 +72,13 @@ export const PostCreateRoomForm: React.FC<PostProps> = (props) => {
                     id="game-type-section"
                     className="w-full mt-1 p-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                     aria-label="game type selection"
-                    onChange={(e) => updateNumberOfPlayersOptions(Number(e.target.value))}
+                    onChange={(e) => {
+                        const value = Number(e.target.value);
+                        setSelectedGameType(value);
+                        updateNumberOfPlayersOptions(Number(e.target.value))}
+                    }
                     >
-                    <option value={2} selected>Single Player</option>
+                    <option value={2}>Single Player</option>
                     <option value={0}>Match</option>
                     <option value={1}>Tournament</option>
                 </select>

@@ -16,13 +16,17 @@ export interface PlayerItemInfoDTO {
     you: boolean
 }
 
+type PlayerItemMap = {
+    [key: string]: PlayerItemInfoDTO;
+}
+
 export interface RoomResponseDTO {
     roomType: RoomTypeKey,
     roomCode: string,
     roomName: string,
     maxAmountOfPlayers: number,
     amountOfPlayers: number,
-    players: PlayerItemInfoDTO[];
+    players: PlayerItemMap,
     owner: boolean,
     ownerColor: EPrimaryColors
 }
