@@ -1,11 +1,12 @@
 import { Handler403MiddlewareAfter } from "./handler403Middleware";
+import { HandlerAuthMiddlewareBefore } from "./handlerAuthUserMiddleware";
 import { HandlerUserIdMiddlewareAfter, HandlerUserIdMiddlewareBefore } from "./handlerUserIdMiddleware";
 import { MiddlewareResponse } from "./middlewareResponse";
 
 async function Fetch(
     url: string,
     options: RequestInit = {},
-    payload: any,
+    payload?: any,
     middlewaresBefore: Function[] = [],
     middlewaresAfter: Function[] = []
 ): Promise<any> {
@@ -19,6 +20,7 @@ async function Fetch(
     ]
     middlewaresBefore = [
         ...middlewaresBefore,
+        HandlerAuthMiddlewareBefore,
         HandlerUserIdMiddlewareBefore,
     ]
 
@@ -30,15 +32,19 @@ async function Fetch(
         }
 
         if (result.data) {
-            updatedPayload = { ...updatedPayload, ...result.data };
+            if (updatedPayload)
+                updatedPayload = { ...updatedPayload, ...result.data };
         }
     }
 
-    const fetchResponse = await fetch(url, {
+    const fetchResponse = updatedPayload ? await fetch(url, {
         ...options,
         headers: { ...options.headers, ...request.headers },
-        body: updatedPayload ? JSON.stringify(updatedPayload) : undefined,
-    });
+        body: JSON.stringify(updatedPayload)
+    }) : await fetch(url, {
+        ...options,
+        headers: { ...options.headers, ...request.headers },
+    })
 
     for (const middlewareFunction of middlewaresAfter) {
         const result: MiddlewareResponse = await middlewareFunction(request, fetchResponse);

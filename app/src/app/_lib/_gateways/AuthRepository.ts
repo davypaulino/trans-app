@@ -1,13 +1,13 @@
 import { Gateway } from "@/app/_middlewares/middlewareHandler";
-import { Session  } from "../../gatewaysConfig";
+import { Session  } from "../gatewaysConfig";
 
-export const PostStartGame = async (roomCode: string)
+export const TestAPI = async ()
 : Promise<Response> => {
-
+    console.log("AQUI CHEG|UEI")
     const response = await Gateway.Fetch(
-        `${Session.Url}/${Session.GamesPath}/${roomCode}/new-game/`,
+        "https://localhost:7147/identity",
         {
-            method: 'POST',
+            method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -16,10 +16,10 @@ export const PostStartGame = async (roomCode: string)
         [],
         []
     )
-
+    console.log(response)
     return response;
 };
 
-export const GameRepository = {
-    PostStartGame
+export const AuthRepository = {
+    TestAPI
 }

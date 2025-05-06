@@ -12,11 +12,41 @@ import { PostCreateRoomForm } from "./_components/_forms/postCreateRoomForm";
 import { PostLoginForm } from '@/app/_components/_forms/postLoginForm';
 import Background from '@/app/_components/background';
 import { PostRegisterForm } from './_components/_forms/postRegisterForm';
+import { AuthRepository } from './_lib/_gateways/AuthRepository';
+import { AuthClient } from './_components/_services/authService';
 
 export default function Home() {
   const [createRoomModalIsOpen, setCreateRoomModal] = useState<boolean>(false);
   const [loginisOpen, setLoginisOpen] = useState<boolean>(false);
   const [registerIsOpen, setRegisterIsOpen] = useState<boolean>(false);
+
+  const [test, setTest] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+          const response = await AuthClient.Gateway.get(
+            "https://localhost:7147/identity", {
+            method: 'GET'
+          })
+
+          console.log(response);
+          
+          const respose2 = await AuthClient.Gateway.get(
+            "https://localhost:7147/weatherforecast" , {
+              method: 'GET'
+            })
+
+          console.log(respose2);
+          return response;
+      } catch (error) {
+          console.error("Erro ao buscar dados:", error);
+          return null;
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <section>
