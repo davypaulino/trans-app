@@ -1,26 +1,26 @@
 "use server"
 import bcrypt from "bcrypt"
-import db from '../db';
+//import db from '../db';
 import { randomUUID } from 'crypto';
 import { createSession } from '../session';
 import { redirect } from 'next/navigation';
 import { FormState, RegisterFormSchema } from '../definitions';
 
-const insertUser = async (userId: string, nickname: string, email: string, password: string, acceptTerms: boolean) => {
-    return new Promise((resolve, reject) => {
-        db.run(
-            "INSERT INTO users (id, nickname, email, password, acceptTerms) VALUES (?, ?, ?, ?, ?)",
-            [userId, nickname, email, password, acceptTerms],
-            function (err) {
-                if (err) {
-                    reject({ message: "An error occurred while creating your account." });
-                } else {
-                    resolve({ id: this.lastID });
-                }
-            }
-        );
-    });
-};
+// const insertUser = async (userId: string, nickname: string, email: string, password: string, acceptTerms: boolean) => {
+//     return new Promise((resolve, reject) => {
+//         db.run(
+//             "INSERT INTO users (id, nickname, email, password, acceptTerms) VALUES (?, ?, ?, ?, ?)",
+//             [userId, nickname, email, password, acceptTerms],
+//             function (err) {
+//                 if (err) {
+//                     reject({ message: "An error occurred while creating your account." });
+//                 } else {
+//                     resolve({ id: this.lastID });
+//                 }
+//             }
+//         );
+//     });
+// };
 
 export async function register(state: FormState, formData: FormData)
 {
@@ -42,9 +42,9 @@ export async function register(state: FormState, formData: FormData)
     const userId = randomUUID()
     const hashedPassword = await bcrypt.hash(password, 10)
 
-    const data: { id: string } = await insertUser(userId, nickname, email, hashedPassword, acceptTerms) as { id: string }
+    //const data: { id: string } = await insertUser(userId, nickname, email, hashedPassword, acceptTerms) as { id: string }
 
-    const user = data?.id
+    const user = "c729b8b9-72f4-4b38-ac3d-714a5d9bf4a6"
 
     if (!user) {
         return {
