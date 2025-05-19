@@ -64,7 +64,8 @@ export const PostCreateARoom = async (event: React.FormEvent<HTMLFormElement>)
         roomName: formData.get('roomName') as string,
         privateRoom: formData.get('isPrivate') === 'true'
     };
-
+    console.log(Url)
+    console.log(RoomsPath)
     const response = await Gateway.Fetch(
         `${Url}/${RoomsPath}/new-room/`,
         {
@@ -77,7 +78,6 @@ export const PostCreateARoom = async (event: React.FormEvent<HTMLFormElement>)
         [],
         []
     )
-
     return response;
 };
 

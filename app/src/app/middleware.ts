@@ -1,31 +1,34 @@
-import { NextRequest, NextResponse } from "next/server";
+import 'server-only'
+import { cookies } from 'next/headers'
+import { NextRequest, NextResponse } from 'next/server'
+import { decrypt } from '@/app/_lib/session'
 
-export function middleware(req: NextRequest) {
-    const response = NextResponse.next();
-
-    // Get 'X-User-Id' from request headers or cookies
-    const userIdFromCookies = req.cookies.get("userId")?.value ?? "";
-    const userIdFromHeaders = req.headers.get("X-User-Id");
-
-    // Store 'X-User-Id' in cookies if received in headers
-    if (userIdFromHeaders && userIdFromHeaders !== userIdFromCookies) {
-        response.cookies.set("userId", userIdFromHeaders, { path: "/", secure: true, httpOnly: true });
-    }
-
-    // Clone headers and inject 'X-User-Id' if found in cookies
-    const modifiedHeaders = new Headers(req.headers);
-    if (userIdFromCookies) {
-        modifiedHeaders.set("X-User-Id", userIdFromCookies);
-    }
-
-    return NextResponse.next({
-        request: {
-            headers: modifiedHeaders,
-        },
-    });
+const protectedRoutes = ['/games', '/home', '/ranking', '/rooms', '/users']
+const publicRoutes = ['/']
+ 
+export default async function middleware(req: NextRequest) {
+  const path = req.nextUrl.pathname
+  const isProtectedRoute = protectedRoutes.includes(path)
+  const isPublicRoute = publicRoutes.includes(path)
+ 
+  const cookie = (await cookies()).get('session')?.value
+  const session = await decrypt(cookie)
+ 
+  if (isProtectedRoute && !session?.userId) {
+    return NextResponse.redirect(new URL('/', req.nextUrl))
+  }
+ 
+  if (
+    isPublicRoute &&
+    session?.userId &&
+    !req.nextUrl.pathname.startsWith('/home')
+  ) {
+    return NextResponse.redirect(new URL('/home', req.nextUrl))
+  }
+ 
+  return NextResponse.next()
 }
 
-// Apply middleware only to API requests
 export const config = {
-    matcher: "/api/:path*",
-};
+  matcher: ['/((?!api|_next/static|_next/image|.*\\.png$).*)'],
+}

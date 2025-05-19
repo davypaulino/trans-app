@@ -1,53 +1,7 @@
-'use client'
-
-import Link from 'next/link';
-import { useState, useEffect } from "react";
-import { PaginationResponse } from "./_components/_dtos/paginationResponse";
-import { RoomItemDto } from "./_components/_dtos/userSession/roomItemDto";
-import { getAllRooms } from "./_lib/_gateways/userSession/roomRepository";
-import { RequestParamsDto } from "@/app/_components/_dtos/requestParamsDto";
-import { ModalComponent } from "@/app/_components/modal";
-import { PuzzlePieceIcon, FingerPrintIcon, IdentificationIcon  } from '@heroicons/react/24/outline';
-import { PostCreateRoomForm } from "./_components/_forms/postCreateRoomForm";
-import { PostLoginForm } from '@/app/_components/_forms/postLoginForm';
 import Background from '@/app/_components/background';
-import { PostRegisterForm } from './_components/_forms/postRegisterForm';
-import { AuthRepository } from './_lib/_gateways/AuthRepository';
-import { AuthClient } from './_components/_services/authService';
+import { BtnLogin, BtnRegister } from "./_components/btns/btns";
 
 export default function Home() {
-  const [createRoomModalIsOpen, setCreateRoomModal] = useState<boolean>(false);
-  const [loginisOpen, setLoginisOpen] = useState<boolean>(false);
-  const [registerIsOpen, setRegisterIsOpen] = useState<boolean>(false);
-
-  const [test, setTest] = useState(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-          const response = await AuthClient.Gateway.get(
-            "https://localhost:7147/identity", {
-            method: 'GET'
-          })
-
-          console.log(response);
-          
-          const respose2 = await AuthClient.Gateway.get(
-            "https://localhost:7147/weatherforecast" , {
-              method: 'GET'
-            })
-
-          console.log(respose2);
-          return response;
-      } catch (error) {
-          console.error("Erro ao buscar dados:", error);
-          return null;
-      }
-    };
-
-    fetchData();
-  }, []);
-
   return (
     <section>
       <Background />
@@ -60,38 +14,11 @@ export default function Home() {
             Create your account or sign up to start playing now with friends.
           </p>
           <div className="mt-10 flex items-center justify-center gap-x-6">
-            <button
-              onClick={() => setLoginisOpen(true)}
-              className="rounded-md bg-emerald-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-emerald-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600"
-            >
-              Login
-            </button>
-            <button
-              onClick={() => setRegisterIsOpen(true)}
-              className="text-sm/6 font-semibold text-grey-900">
-              Register <span aria-hidden="true">→</span>
-            </button>
+            <BtnLogin />
+            <BtnRegister />
           </div>
         </div>
       </div>
-
-      <ModalComponent
-        title="Sing in"
-        open={loginisOpen}
-        setOpen={setLoginisOpen}
-        icon={FingerPrintIcon}
-        description="Login into your account, and start play now.">
-        <PostLoginForm />
-      </ModalComponent>
-
-      <ModalComponent
-        title="Sing in"
-        open={registerIsOpen}
-        setOpen={setRegisterIsOpen}
-        icon={IdentificationIcon }
-        description="Create your account and start play now.">
-        <PostRegisterForm />
-      </ModalComponent>
     </section>
   );
 }

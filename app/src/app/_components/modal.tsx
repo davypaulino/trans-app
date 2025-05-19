@@ -1,6 +1,8 @@
+"use client"
+
 import React from "react";
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react'
-import { PuzzlePieceIcon, XCircleIcon } from '@heroicons/react/24/outline'
+import { XCircleIcon } from '@heroicons/react/24/outline'
 import { ComponentType, SVGProps } from "react"
 
 interface ModalProps {
