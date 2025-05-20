@@ -42,7 +42,7 @@ export async function register(state: FormState, formData: FormData)
     const userId = randomUUID()
     const hashedPassword = await bcrypt.hash(password, 10)
 
-    //const data: { id: string } = await insertUser(userId, nickname, email, hashedPassword, acceptTerms) as { id: string }
+    // //const data: { id: string } = await insertUser(userId, nickname, email, hashedPassword, acceptTerms) as { id: string }
 
     const user = "c729b8b9-72f4-4b38-ac3d-714a5d9bf4a6"
 

@@ -4,8 +4,8 @@ import { JWTPayload } from 'jose'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
  
-const secretKey = process.env.SESSION_SECRET
-const encodedKey = new TextEncoder().encode(secretKey)
+const secretKey = process.env.SESSION_SECRET_KEY
+const encodedKey = new TextEncoder().encode(secretKey ? secretKey : "")
 
 export interface SessionPayload extends JWTPayload {
     userId: string
@@ -32,7 +32,13 @@ export async function decrypt(session: string | undefined = '') {
  
 export async function createSession(userId: string) {
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+  console.log(encodedKey)
   const session = await encrypt({ userId, expiresAt })
+
+  if (!session || session.length === 0) {
+    throw new Error('Failed to create valid session token')
+  }
+  
   const cookieStore = await cookies()
  
   cookieStore.set('session', session, {
