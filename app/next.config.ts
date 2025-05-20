@@ -1,15 +1,18 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const config = {
+  crossOrigin: 'anonymous',
   experimental: {
     serverActions: {
+      allowedForwardedHosts: ['effective-system-5457w65966qf77x5-8443.app.github.dev'],
       allowedOrigins: [
-        "https://effective-system-5457w65966qf77x5-8443.app.github.dev",
-        "http://localhost:3000",
-        "http://localhost:8443"
-      ]
+        'localhost:3000',
+        'localhost',
+        'localhost:443',
+        'localhost:8443',
+        'effective-system-5457w65966qf77x5-8443.app.github.dev'
+      ],
     }
-  }
-};
+  },
+}
 
-module.exports = nextConfig
+module.exports = config
