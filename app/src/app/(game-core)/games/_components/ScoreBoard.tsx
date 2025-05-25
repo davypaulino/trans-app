@@ -14,8 +14,9 @@ export const ScoreBoard: React.FC<ScoreBoardProps> = ({match, playerScoreOne, pl
         : 2;
 
     const emptyPlayers = Array(numberOfPlayers).fill(null)
+    const playerList = match ? Object.values(match.players) : []
     const safePlayers = match
-        ? [...match.players, ...emptyPlayers]
+        ? [...playerList, ...emptyPlayers]
         : [...emptyPlayers];
 
     const middleIndex = Math.floor(safePlayers.length / 2);

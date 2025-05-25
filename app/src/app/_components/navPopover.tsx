@@ -19,9 +19,9 @@ export const NavPopoverComponent = ({
 }: NavPopoverProps) => {
     return (
         <Popover className={`relative ${className}`}>
-            <PopoverButton className="flex items-center gap-x-1 text-sm/6 font-semibold text-gray-900">
+            <PopoverButton className="flex items-center gap-x-1 text-sm/6 font-semibold text-gray-900 dark:text-gray-200">
                 Game Section
-                <ChevronDownIcon aria-hidden="true" className="size-5 flex-none text-gray-400" />
+                <ChevronDownIcon aria-hidden="true" className="size-5 flex-none text-gray-900 dark:text-gray-200" />
             </PopoverButton>
     
             <PopoverPanel
