@@ -30,7 +30,7 @@ export async function register(state: FormState, formData: FormData)
         password: formData.get('password'),
         confirmPassword: formData.get('confirmPassword'),
         acceptTerms: formData.get('acceptTerms') === "on",
-    })
+    }) // alterar para receber nickname | terms | photo only
 
     if (!validatedFields.success) {
         return {

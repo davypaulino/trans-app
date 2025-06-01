@@ -6,17 +6,13 @@ import { useEffect, useState } from "react";
 export default function Page() {
   const [user, setUser] = useState(null);
   const searchParams = useSearchParams();
-  const token = searchParams.get("token");
+  const code = searchParams.get("code");
+  const state = searchParams.get("state");
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await fetch(`http://localhost:3001/users/1`, {
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${token}`
-            }
-        });
+        const res = await fetch(`http://localhost:3001/users/1/?code=${code}&state=${state}`);
         if (!res.ok) {
           throw new Error(`HTTP error! Status: ${res.status}`);
         }
@@ -36,9 +32,9 @@ export default function Page() {
       <h1>Olá auth</h1>
       {user ? (
         <div>
-          <p>Nome: {user.nickname}</p>
+          <p>Nome: {user.name}</p>
           <p>Email: {user.email}</p>
-          <img src={user.avatar_url} alt="Avatar" width={100} />
+          <img src={user.avatarUrl} alt="Avatar" width={100} />
         </div>
       ) : (
         <p>Carregando dados do usuário...</p>

@@ -4,7 +4,7 @@ const config = {
   experimental: {
     serverActions: {
       allowedForwardedHosts: ['effective-system-5457w65966qf77x5-8443.app.github.dev'],
-      allowedOrigins: [
+      allowedDevOrigins: [
         'localhost:3000',
         'localhost',
         'localhost:443',
