@@ -4,7 +4,7 @@ import bcrypt from "bcrypt"
 import { randomUUID } from 'crypto';
 import { createSession } from '../session';
 import { redirect } from 'next/navigation';
-import { FormState, RegisterFormSchema } from '../definitions';
+import { CompleteRegisterFormSchema, FormState, RegisterFormSchema } from '../definitions';
 
 // const insertUser = async (userId: string, nickname: string, email: string, password: string, acceptTerms: boolean) => {
 //     return new Promise((resolve, reject) => {
@@ -65,3 +65,4 @@ export async function register(state: FormState, formData: FormData)
     //     },
     // });
 }
+

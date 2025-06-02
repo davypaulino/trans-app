@@ -49,3 +49,31 @@ export type FormState =
       message?: string
     }
   | undefined
+
+
+  export const CompleteRegisterFormSchema = z.object({
+    userId: z.string().trim(), 
+    nickname: z
+        .string()
+        .min(3, { message: 'Name must be at least 3 characters long.' })
+        .trim(),
+    photoUrl: z
+        .string()
+        .trim(),
+    acceptTerms: z
+        .boolean()
+        .refine(val => val === true, {
+            message: "You must accept the terms and conditions.",
+        }),
+})
+
+export type CompleteRegisterFormState =
+  | {
+      errors?: {
+        nickname?: string[]
+        photoUrl?: string[]
+        acceptTerms?: string[]
+      }
+      message?: string
+    }
+  | undefined

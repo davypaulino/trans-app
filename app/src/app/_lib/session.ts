@@ -3,12 +3,13 @@ import { SignJWT, jwtVerify } from 'jose'
 import { JWTPayload } from 'jose'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
+import { logger } from '../_utils/logger'
  
 const secretKey = process.env.SESSION_SECRET_KEY
 const encodedKey = new TextEncoder().encode(secretKey ? secretKey : "")
 
 export interface SessionPayload extends JWTPayload {
-    userId: string
+    token: string
 }
 
 export async function encrypt(payload: SessionPayload) {
@@ -21,19 +22,18 @@ export async function encrypt(payload: SessionPayload) {
  
 export async function decrypt(session: string | undefined = '') {
   try {
-    const { payload } = await jwtVerify(session, encodedKey, {
+    const { payload } = await jwtVerify<SessionPayload>(session, encodedKey, {
       algorithms: ['HS256'],
     })
     return payload
   } catch (error) {
-    console.log('Failed to verify session')
+    logger.error("Error on decrypt token", {"function_name": decrypt.name, "error": error})
   }
 }
  
-export async function createSession(userId: string) {
+export async function createSession(token: string) {
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-  console.log(encodedKey)
-  const session = await encrypt({ userId, expiresAt })
+  const session = await encrypt({ token, expiresAt })
 
   if (!session || session.length === 0) {
     throw new Error('Failed to create valid session token')
@@ -61,6 +61,7 @@ export async function updateSession() {
   const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
  
   const cookieStore = await cookies()
+
   cookieStore.set('session', session, {
     httpOnly: true,
     secure: true,

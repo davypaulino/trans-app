@@ -1,5 +1,10 @@
+"use server"
+
 import { Gateway } from "@/app/_middlewares/middlewareHandler";
-import { Session  } from "../gatewaysConfig";
+import { cookies } from "next/headers";
+import { decrypt } from "../session";
+import { decodeJwt } from "jose";
+import { JwtSessionPayload } from "@/middleware";
 
 export const TestAPI = async ()
 : Promise<Response> => {
@@ -20,6 +25,24 @@ export const TestAPI = async ()
     return response;
 };
 
-export const AuthRepository = {
-    TestAPI
+export async function GetUserInfo() : Promise<Response | null> {
+    try {
+        const cookie = (await cookies()).get('session')?.value
+        const session = await decrypt(cookie)
+        const jwtSessionToken = session ? decodeJwt<JwtSessionPayload>(session?.token) : null
+        
+        const res = await fetch(`http://localhost:3001/users?userId=${jwtSessionToken?.sub}`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${jwtSessionToken}`
+            }
+        });
+        if (!res.ok) {
+            throw new Error(`HTTP error! Status: ${res.status} ${res.body}`);
+        }
+        return await res.json();
+    } catch (error) {
+        console.error("Error fetching user:", error);
+        return null
+    }
 }
