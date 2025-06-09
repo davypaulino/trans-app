@@ -105,7 +105,7 @@ export const PostCompleteRegisterForm: React.FC<CompleteRegisterProps> = (props)
                     type="text"
                     id="nickname-input"
                     value={user?.nickname || ""}
-                    onChange={handleChange} // ✅ Adicionado onChange
+                    onChange={handleChange} 
                     className="w-full mt-1 p-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                 />
                 <ErrorsDisplay errors={state?.errors?.nickname} />
@@ -118,7 +118,7 @@ export const PostCompleteRegisterForm: React.FC<CompleteRegisterProps> = (props)
                     type="text"
                     id="photo-input"
                     value={user?.img_url || ""}
-                    onChange={handleChange} // ✅ Agora pode ser editado
+                    onChange={handleChange} 
                     className="w-full mt-1 p-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                 />
                 <ErrorsDisplay errors={state?.errors?.photoUrl} />

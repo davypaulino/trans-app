@@ -3,13 +3,15 @@
 import { redirect } from 'next/navigation';
 import { CompleteRegisterFormSchema, FormState } from '../definitions';
 import { cookies } from 'next/headers';
-import { decrypt } from '../session';
-import { decodeJwt } from 'jose';
-import { JwtSessionPayload } from '@/middleware';
+import { createSession, decrypt } from '../session';
+
+interface RegisterResponse {
+    access_token: string;
+    refresh_token: string;
+}
 
 export async function completeRegister(state: FormState, formData: FormData)
 {
-    console.log(formData.get('userId'))
     const validatedFields = CompleteRegisterFormSchema.safeParse({
         userId: formData.get('userId'),
         nickname: formData.get('nickname'),
@@ -17,7 +19,6 @@ export async function completeRegister(state: FormState, formData: FormData)
         acceptTerms: formData.get('acceptTerms') === "on",
     })
 
-    console.log(validatedFields)
     if (!validatedFields.success) {
         console.error(validatedFields.error)
         return {
@@ -25,24 +26,18 @@ export async function completeRegister(state: FormState, formData: FormData)
         }
     }
 
-    console.log("Form validated")
     const {userId,  nickname, photoUrl, acceptTerms } = validatedFields.data;
     const res = await putUserRegister({userId, nickname, avatar_url: photoUrl, terms_accepted: acceptTerms})
-    console.log("Alter user info")
-
-    if (res && res.ok) {
-        redirect('/home')
+    if (!res) {
+        return {
+            errors: {
+                general: ["Failed to register user. Please try again later."]
+            }
+        }
     }
-
-    //await redisClient.set(`auth:${sessionPayload.userId}`, token, { EX: 604800 });
-
-    // return new NextResponse(JSON.stringify({ success: true }), {
-    //     status: 200,
-    //     headers: {
-    //       "Set-Cookie": `token=${token}; HttpOnly; Path=/; Max-Age=${60 * 60 * 24 * 7}; Secure; SameSite=Strict;`,
-    //       "Content-Type": "application/json"
-    //     },
-    // });
+    
+    await createSession(res.access_token)
+    redirect('/home')
 }
 
 interface RegisterData {
@@ -52,7 +47,7 @@ interface RegisterData {
     terms_accepted: boolean;
 }
 
-async function putUserRegister(data: RegisterData): Promise<Response | null> {
+async function putUserRegister(data: RegisterData): Promise<RegisterResponse | null> {
     try {
         const cookie = (await cookies()).get('session')?.value
         const session = await decrypt(cookie)
