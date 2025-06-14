@@ -1,5 +1,5 @@
 import { PlayerItemInfoDTO, EPrimaryColors } from "@/app/_components/_dtos/userSession/RoomResponseDTO";
-import { XCircleIcon, NoSymbolIcon, UserCircleIcon, TagIcon, ArrowUpCircleIcon } from "@heroicons/react/24/outline";
+import { XCircleIcon, NoSymbolIcon, UserCircleIcon, TagIcon } from "@heroicons/react/24/outline";
 import { MinusCircleIcon } from "@heroicons/react/20/solid";
 import { DS } from '@/app/_components/ds';
 import React from "react";

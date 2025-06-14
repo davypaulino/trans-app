@@ -2,13 +2,9 @@
 
 import Link from "next/link";
 import {
-    Popover,
-    PopoverButton,
     PopoverGroup,
-    PopoverPanel,
 } from '@headlessui/react';
 import { Bars3Icon } from '@heroicons/react/24/outline'
-import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { NavItems } from "../_lib/_nav/navOptions";
 import { NavPopoverComponent } from "./navPopover";
 
@@ -17,7 +13,7 @@ export const NavComponent = () => {
         <nav aria-label="Global" className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8">
             <div className="flex lg:flex-1">
                 <Link href="/" className="-m-1.5 p-1.5">
-                    <span className="sr-only">Pung Game</span>
+                    <span className="sr-only dark:text-gray-200">Pung Game</span>
                     <img
                     alt=""
                     src="/assets/icon/favicon.svg"
@@ -40,7 +36,7 @@ export const NavComponent = () => {
                 {NavItems.map((item, index) => (
                     item.href === null ?
                     <NavPopoverComponent key={`nav-item-${index}`} item={item} />
-                    : <Link key={`nav-item-${index}`} href={item.href ?? ""} className="text-sm/6 font-semibold text-gray-900">
+                    : <Link key={`nav-item-${index}`} href={item.href ?? ""} className="text-sm/6 font-semibold text-gray-900 dark:text-gray-200">
                         {item.name}
                     </Link>
                 ))}

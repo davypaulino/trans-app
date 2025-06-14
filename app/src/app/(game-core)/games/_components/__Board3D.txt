@@ -2,12 +2,11 @@
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import * as THREE from 'three'
-import type { Player, Ball, FieldAttributes, GameState } from '@/app/_components/_dtos/gameState'
+import type {GameState } from '@/app/_components/_dtos/gameState'
 
 export const Board3D: React.FC = () => {
     const containerRef = useRef<HTMLDivElement>(null);
     const socketRef = useRef<WebSocket | null>(null);
-    const [current, setCurrent] = useState()
     let actualGamaState: GameState | null = null
     const params = useParams();
     let scene: any 

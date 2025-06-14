@@ -1,4 +1,3 @@
-import { ERoomType } from "@/app/_lib/RoomType";
 import { RoomItemDto } from "@/app/_components/_dtos/userSession/roomItemDto";
 import { RoomItemComponent, RoomItemSkeleton } from "./roomItem";
 

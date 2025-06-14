@@ -1,11 +1,11 @@
 import { Gateway } from "@/app/_middlewares/middlewareHandler";
-import { Session  } from "../../gatewaysConfig";
+import {Environments} from "@/app/_lib/environments";
 
 export const PostStartGame = async (roomCode: string)
 : Promise<Response> => {
 
     const response = await Gateway.Fetch(
-        `${Session.Url}/${Session.GamesPath}/${roomCode}/new-game/`,
+        `${Environments.Resources.User.Host}/rooms/${roomCode}/new-game/`,
         {
             method: 'POST',
             headers: {
