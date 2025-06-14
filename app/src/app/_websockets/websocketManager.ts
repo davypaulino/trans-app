@@ -1,4 +1,4 @@
-import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
+import {Environments} from "@/app/_lib/environments";
 
 class WebSocketManager {
     private socket: WebSocket | null = null;
@@ -13,8 +13,8 @@ class WebSocketManager {
     ) {
         this.endpoint = endpoint;
         this.path = path;
-        this.host = window.location.host;
-        this.connection = `wss://${this.host}${this.endpoint}${this.path}`
+        this.host = `${Environments.Resources.User.Host}`;
+        this.connection = `${Environments.Resources.User.Ws}${this.path}`
     }
 
     public connect(userId: string, roomCode: string): WebSocket {

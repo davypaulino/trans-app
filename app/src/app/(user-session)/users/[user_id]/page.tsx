@@ -2,6 +2,7 @@
 
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import {Environments} from "@/app/_lib/environments";
 
 export default function Page() {
   const [user, setUser] = useState(null);
@@ -11,7 +12,7 @@ export default function Page() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await fetch(`http://localhost:3001/users/1`, {
+        const res = await fetch(`${Environments.Resources.Auth.Host}/users/1`, {
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${token}`
@@ -36,9 +37,9 @@ export default function Page() {
       <h1>Olá auth</h1>
       {user ? (
         <div>
-          <p>Nome: {user.nickname}</p>
-          <p>Email: {user.email}</p>
-          <img src={user.avatar_url} alt="Avatar" width={100} />
+          <p>Nome: {user["nickname"]}</p>
+          <p>Email: {user["email"]}</p>
+          <img src={user["avatar_url"]} alt="Avatar" width={100} />
         </div>
       ) : (
         <p>Carregando dados do usuário...</p>

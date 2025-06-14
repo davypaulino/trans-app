@@ -70,9 +70,11 @@ export type FormState =
 export type CompleteRegisterFormState =
   | {
       errors?: {
-        nickname?: string[]
-        photoUrl?: string[]
-        acceptTerms?: string[]
+          userId?: string[]
+          nickname?: string[]
+          photoUrl?: string[]
+          acceptTerms?: string[]
+          general?: string[]
       }
       message?: string
     }

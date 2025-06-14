@@ -1,5 +1,5 @@
 import Background from '@/app/_components/background';
-import { BtnLogin, BtnRegister } from "./_components/btns/btns";
+import { BtnLogin } from "./_components/btns/btns";
 
 export default function Home() {
   return (
@@ -15,7 +15,6 @@ export default function Home() {
           </p>
           <div className="mt-10 flex items-center justify-center gap-x-6">
             <BtnLogin />
-            <BtnRegister />
           </div>
         </div>
       </div>

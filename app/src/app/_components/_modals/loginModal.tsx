@@ -1,23 +1,20 @@
 'use client'
 
-import { Button } from '@headlessui/react';
+import { Environments } from "@/app/_lib/environments";
 import Link from 'next/link';
-import React, { useState, useEffect } from 'react'
+import React from "react";
 
 interface LoginProps {
     className?: string
 }
 
-export const PostLoginForm: React.FC<LoginProps> = (props) => {
-    const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        
-    };
+export const LoginModal: React.FC<LoginProps> = (props) => {
 
     return (
-        <div className="flex flex-col justify-center items-center">
-            <Link 
-                className="flex gap-2 items-center bg-slate-700 text-white px-4 py-2 rounded hover:bg-emerald-400 transition duration-300" 
-                href="http://localhost:3001/auth/github"
+        <div className={`flex flex-col justify-center items-center ${(!(props && props.className) ? "" : props.className)}`}>
+            <Link
+                className="flex gap-2 items-center bg-slate-700 text-white px-4 py-2 rounded hover:bg-emerald-400 transition duration-300"
+                href={`${Environments.Resources.Auth.Host}/auth/github`}
             >
                 <svg
                     className='w-8 h-8'
@@ -29,10 +26,10 @@ export const PostLoginForm: React.FC<LoginProps> = (props) => {
                 </svg>
                 <p>Login with Github</p>
             </Link>
-        
-            <Link 
-                className="flex gap-2 items-center bg-slate-700 text-white px-4 py-2 rounded hover:bg-emerald-400 transition duration-300 mt-4" 
-                href="http://localhost:3001/auth/google"
+
+            <Link
+                className="flex gap-2 items-center bg-slate-700 text-white px-4 py-2 rounded hover:bg-emerald-400 transition duration-300 mt-4"
+                href={`${Environments.Resources.Auth.Host}/auth/google`}
             >
                 <svg
                     className='w-7 h-7'
@@ -45,6 +42,5 @@ export const PostLoginForm: React.FC<LoginProps> = (props) => {
                 <p>Login with Google</p>
             </Link>
         </div>
-    
     );
 }

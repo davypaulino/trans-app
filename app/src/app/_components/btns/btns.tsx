@@ -1,35 +1,14 @@
 "use client"
 
 import { useState } from "react";
-import { FingerPrintIcon, IdentificationIcon, PuzzlePieceIcon } from '@heroicons/react/24/outline';
+import { FingerPrintIcon, PuzzlePieceIcon } from '@heroicons/react/24/outline';
 import { ModalComponent } from "@/app/_components/modal";
-import { PostRegisterForm } from '@/app/_components/_forms/postRegisterForm';
-import { PostLoginForm } from '@/app/_components/_forms/postLoginForm';
 import { PostCreateRoomForm } from "@/app/_components/_forms/postCreateRoomForm";
-
-export const BtnRegister = () => {
-    const [registerIsOpen, setRegisterIsOpen] = useState<boolean>(false);
-    return (
-        <>
-            <button
-                onClick={() => setRegisterIsOpen(true)}
-                className="text-sm/6 font-semibold text-grey-900">
-                Register <span aria-hidden="true">→</span>
-            </button>
-            <ModalComponent
-                title="Sing in"
-                open={registerIsOpen}
-                setOpen={setRegisterIsOpen}
-                icon={IdentificationIcon }
-                description="Create your account and start play now.">
-                <PostRegisterForm />
-            </ModalComponent>
-        </>
-    );
-}
+import {LoginModal} from "@/app/_components/_modals/loginModal";
 
 export const BtnLogin = () => {
     const [loginisOpen, setLoginisOpen] = useState<boolean>(false);
+
     return (
         <>
             <button
@@ -44,7 +23,7 @@ export const BtnLogin = () => {
                 setOpen={setLoginisOpen}
                 icon={FingerPrintIcon}
                 description="Login into your account, and start play now.">
-                <PostLoginForm />
+                <LoginModal />
             </ModalComponent>
         </>
     );

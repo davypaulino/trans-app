@@ -9,14 +9,14 @@ import {
 interface INavOptionSideItem {
     name: string;
     href: string;
-    icon: React.ComponentType<{ 'aria-hidden'?: string; className?: string }>; 
+    icon: React.ComponentType<{ 'aria-hidden'?: boolean; className?: string }>;
 }
 
 interface INavOptionItem {
     name: string;
     description?: string;
     href: string;
-    icon: React.ComponentType<{ 'aria-hidden'?: string; className?: string }>;
+    icon: React.ComponentType<{ 'aria-hidden'?: boolean; className?: string }>;
 }
 
 interface INavItem {

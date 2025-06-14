@@ -2,13 +2,9 @@
 
 import Link from "next/link";
 import {
-    Popover,
-    PopoverButton,
     PopoverGroup,
-    PopoverPanel,
 } from '@headlessui/react';
 import { Bars3Icon } from '@heroicons/react/24/outline'
-import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { NavItems } from "../_lib/_nav/navOptions";
 import { NavPopoverComponent } from "./navPopover";
 

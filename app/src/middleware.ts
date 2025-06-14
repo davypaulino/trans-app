@@ -3,8 +3,11 @@
 import { cookies } from 'next/headers'
 import { decodeJwt, JWTPayload } from 'jose'
 import { NextRequest, NextResponse } from 'next/server'
-import { createSession, decrypt, updateSession } from '@/app/_lib/session'
+import { createSession, decrypt } from '@/app/_lib/session'
 import { logger } from './app/_utils/logger'
+import {ExternAuthApiMiddleware} from "@/app/_middlewares/externAuthApiMiddleware";
+import {TryGetToken} from "@/app/_middlewares/tryGetToken";
+import {Environments} from "@/app/_lib/environments";
 
 const protectedRoutes = ['/games', '/register', '/home', '/ranking', '/rooms', '/users']
 const publicRoutes = ['/']
@@ -38,18 +41,18 @@ export default async function middleware(req: NextRequest) {
   const isProtectedRoute = protectedRoutes.some(route => path.startsWith(route))
   const isPublicRoute = publicRoutes.includes(path)
   
-  const token = req.nextUrl.searchParams.get('token')
-  
-  if (token) {
-    logger.info("Get token query param", {"function_name": middleware.name})
-    await createSession(token)
+
+  await TryGetToken(req)
+  const externResponse = await ExternAuthApiMiddleware(req)
+  if (externResponse) {
+    return externResponse
   }
-  
+
   let jwtSessionToken = null
   const cookie = (await cookies()).get('session')?.value
   if (cookie) {
     const session = await decrypt(cookie)
-    jwtSessionToken = session ? decodeJwt<JwtSessionPayload>(session?.token) : null
+    jwtSessionToken = session ? decodeJwt<JwtSessionPayload>(session?.access_token) : null
   }
   
   if (isProtectedRoute && !jwtSessionToken) {
@@ -69,5 +72,11 @@ export default async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|.*\\.png$).*)'],
+  matcher: [
+      `/apim/v1/user-session:path*`,
+      `/apim/v1/guardian:path*`,
+      `/apim/v1/game-core:path*`,
+      '/((?!_next/static|_next/image|favicon.ico|.*\\.png$|.*\\.jpeg$|.*\\.gif$|.*\\.css$|.*\\.js$).*)',
+  ],
 }
+

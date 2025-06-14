@@ -27,10 +27,9 @@ const ThreeScene: React.FC = () => {
       const loader = new THREE.ObjectLoader();
       const scene = loader.parse(sceneJson.scene);
 
-      let ball = scene.getObjectByName('Ball');
-        let direction = new THREE.Vector3(Math.random() - 0.5, 0, Math.random() - 0.5).normalize();
-        const speed = 1.5; // unidades por segundo
-
+      const ball = scene.getObjectByName('Ball');
+      const direction = new THREE.Vector3(Math.random() - 0.5, 0, Math.random() - 0.5).normalize();
+      const speed = 1.5; // unidades por segundo
 
       // Get camera
       const cameraObj = scene.getObjectByName('PerspectiveCamera');

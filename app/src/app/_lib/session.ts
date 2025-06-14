@@ -1,15 +1,17 @@
 import 'server-only'
+
 import { SignJWT, jwtVerify } from 'jose'
 import { JWTPayload } from 'jose'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { logger } from '../_utils/logger'
  
-const secretKey = process.env.SESSION_SECRET_KEY
+const secretKey = process.env.SESSION_SECRET_KEY || 'ac5bf905702f25bc0e61b6c6b05fcce6fc14344b43867ded211a1c8bf8af5af3'
 const encodedKey = new TextEncoder().encode(secretKey ? secretKey : "")
 
 export interface SessionPayload extends JWTPayload {
-    token: string
+    access_token: string,
+    refresh_token?: string,
 }
 
 export async function encrypt(payload: SessionPayload) {
@@ -19,7 +21,7 @@ export async function encrypt(payload: SessionPayload) {
     .setExpirationTime('7d')
     .sign(encodedKey)
 }
- 
+
 export async function decrypt(session: string | undefined = '') {
   try {
     const { payload } = await jwtVerify<SessionPayload>(session, encodedKey, {
@@ -31,9 +33,9 @@ export async function decrypt(session: string | undefined = '') {
   }
 }
  
-export async function createSession(token: string) {
+export async function createSession(access_token: string, refresh_token: string | undefined) {
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-  const session = await encrypt({ token, expiresAt })
+  const session = await encrypt({ access_token, refresh_token, expiresAt })
 
   if (!session || session.length === 0) {
     throw new Error('Failed to create valid session token')

@@ -2,7 +2,8 @@
 
 import { GameState } from "@/app/_components/_dtos/gameState";
 import { GameRender } from "./GameRender";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useEffect } from "react";
+import {Environments} from "@/app/_lib/environments";
 
 interface PlayersScore {
     [key: string]: { score: number }; 
@@ -25,14 +26,11 @@ export const Canva = ({
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
     useEffect(() => {
-        let game = new GameRender(canvasRef.current)
+        const game = new GameRender(canvasRef.current)
 
-        const host = window.location.host;
         const userId = localStorage.getItem("userId");
-        const endpoint = `/api/v1/game-core/games/${gameId}/${userId}/`;
-        const wsProtocol = window.location.protocol === "https:" ? "wss" : "ws";
-
-        const socket = new WebSocket(`${wsProtocol}://${host}${endpoint}`);
+        const endpoint = `/games/${gameId}/${userId}/`;
+        const socket = new WebSocket(`${Environments.Resources.Game.Ws}${endpoint}`);
         socketRef.current = socket;
 
         socket.onopen = () => {
