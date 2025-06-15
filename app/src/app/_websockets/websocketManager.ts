@@ -5,7 +5,7 @@ class WebSocketManager {
     private host: string = "";
     private endpoint: string =  ""
     private path: string = ""
-    private connection: string = `wss://${this.host}${this.endpoint}`
+    private connection: string = `wss://localhost:8443${this.endpoint}`
 
     public constructor(
         endpoint: string,
@@ -14,7 +14,7 @@ class WebSocketManager {
         this.endpoint = endpoint;
         this.path = path;
         this.host = `${Environments.Resources.User.Host}`;
-        this.connection = `${Environments.Resources.User.Ws}${this.path}`
+        this.connection = `wss://localhost:8443${this.endpoint}${this.path}`
     }
 
     public connect(userId: string, roomCode: string): WebSocket {
@@ -24,7 +24,7 @@ class WebSocketManager {
             return this.socket;
         }
 
-        this.socket = new WebSocket(`${this.connection}/${roomCode}/?userId=${userId}`);
+        this.socket = new WebSocket(`${this.connection}/${roomCode}/?userId=${localStorage.getItem("userId")}`);
         return this.socket;
     }
 

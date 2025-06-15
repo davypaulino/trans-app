@@ -8,6 +8,7 @@ export const externApis: (string | undefined)[] = [
     Environments.Resources.User.NextApi,
     Environments.Resources.Auth.NextApi,
     Environments.Resources.Game.NextApi,
+    '/apim/'
 ]
 
 export async function ExternAuthApiMiddleware(request: NextRequest) {
@@ -38,7 +39,7 @@ export async function ExternAuthApiMiddleware(request: NextRequest) {
         }
 
         const requestHeaders = new Headers(request.headers);
-        requestHeaders.set('Authorization', `Bearer ${session?.accessToken}`);
+        requestHeaders.set('Authorization', `Bearer ${session?.access_token}`);
         requestHeaders.set('X-Correlation-Id', correlation_id);
 
         logger.info("Finished", {"function_name": ExternAuthApiMiddleware.name})

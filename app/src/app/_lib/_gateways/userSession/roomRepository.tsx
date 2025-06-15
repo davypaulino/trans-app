@@ -10,7 +10,7 @@ import { ErrorResposeDto } from "@/app/_components/_dtos/userSession/ErrorRespon
 export const getAllRooms = async (requestParams: RequestParamsDto<string>)
 : Promise<PaginationResponse<RoomItemDto>>  => {
     console.log(requestParams)
-    const data = await fetch(`${Environments.Resources.User.NextApi}/rooms/?page=${requestParams.page}&size=${requestParams?.size ?? 4}&filter=${requestParams.filters ?? ""}`);
+    const data = await fetch(`/apim/v2/user-session/rooms/?page=${requestParams.page}&size=${requestParams?.size ?? 4}&filter=${requestParams.filters ?? ""}`);
     const posts: PaginationResponse<RoomItemDto> = await data.json()
     return posts; 
 }
@@ -64,18 +64,15 @@ export const PostCreateARoom = async (event: React.FormEvent<HTMLFormElement>)
         roomName: formData.get('roomName') as string,
         privateRoom: formData.get('isPrivate') === 'true'
     };
-    const response = await Gateway.Fetch(
-        `${Environments.Resources.User.Host}/rooms/new-room/`,
+    const response = await fetch(
+        `/apim/v2/user-session/rooms/new-room/`,
         {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
-            }
-        },
-        data,
-        [],
-        []
-    )
+            },
+            body: JSON.stringify(data)
+        })
     return response;
 };
 
