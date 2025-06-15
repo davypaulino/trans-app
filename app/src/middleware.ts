@@ -40,32 +40,38 @@ export default async function middleware(req: NextRequest) {
   const path = req.nextUrl.pathname
   const isProtectedRoute = protectedRoutes.some(route => path.startsWith(route))
   const isPublicRoute = publicRoutes.includes(path)
-  
+  const isApimRoute = path.startsWith("/apim")
 
-  await TryGetToken(req)
-  const externResponse = await ExternAuthApiMiddleware(req)
-  if (externResponse) {
-    return externResponse
+  if (isApimRoute) {
+    const externResponse = await ExternAuthApiMiddleware(req)
+    if (externResponse) {
+      return externResponse
+    }
+  } else {
+    await TryGetToken(req)
+
+    let jwtSessionToken = null
+    const cookie = (await cookies()).get('session')?.value
+    if (cookie) {
+      const session = await decrypt(cookie)
+      jwtSessionToken = session ? decodeJwt<JwtSessionPayload>(session?.access_token) : null
+    }
+
+    if (isProtectedRoute && !jwtSessionToken) {
+      return NextResponse.redirect(new URL('/', req.nextUrl))
+    }
+
+    if ((isPublicRoute || isProtectedRoute) && !path.startsWith("/register") && jwtSessionToken?.status == UserStatus.Pending) {
+      return NextResponse.redirect(new URL('/register', req.nextUrl))
+    }
+
+    if ((isPublicRoute || isProtectedRoute) && path.startsWith("/register") && jwtSessionToken?.status != UserStatus.Pending) {
+      return NextResponse.redirect(new URL('/home', req.nextUrl))
+    }
   }
 
-  let jwtSessionToken = null
-  const cookie = (await cookies()).get('session')?.value
-  if (cookie) {
-    const session = await decrypt(cookie)
-    jwtSessionToken = session ? decodeJwt<JwtSessionPayload>(session?.access_token) : null
-  }
-  
-  if (isProtectedRoute && !jwtSessionToken) {
-    return NextResponse.redirect(new URL('/', req.nextUrl))
-  }
-  
-  if ((isPublicRoute || isProtectedRoute) && !path.startsWith("/register") && jwtSessionToken?.status == UserStatus.Pending) {
-    return NextResponse.redirect(new URL('/register', req.nextUrl))
-  }
-  
-  if ((isPublicRoute || isProtectedRoute) && path.startsWith("/register") && jwtSessionToken?.status != UserStatus.Pending) {
-    return NextResponse.redirect(new URL('/', req.nextUrl))
-  }
+
+
   
   logger.info("Finished | middleware", { "function_name": middleware.name })
   return NextResponse.next()
