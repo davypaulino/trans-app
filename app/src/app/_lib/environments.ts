@@ -1,3 +1,5 @@
+"use server-only"
+
 interface ResourceServiceConfig {
     Host?: string;
     Ws?: string;
@@ -31,5 +33,5 @@ export const Environments: EnvironmentConfig = {
             Ws: process.env.NEXT_PUBLIC_RESOURCE_WS_AUTH,
             NextApi: "/apim/v1/guardian"
         },
-    }
+    },
 }

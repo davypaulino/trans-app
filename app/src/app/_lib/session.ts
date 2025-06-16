@@ -1,3 +1,5 @@
+"use server"
+
 import 'server-only'
 
 import { SignJWT, jwtVerify } from 'jose'
@@ -5,8 +7,17 @@ import { JWTPayload } from 'jose'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { logger } from '../_utils/logger'
- 
-const secretKey = process.env.SESSION_SECRET_KEY || 'ac5bf905702f25bc0e61b6c6b05fcce6fc14344b43867ded211a1c8bf8af5af3'
+
+interface Keys {
+  [key: string]: string | undefined
+}
+
+const keys: Keys = {
+    'access': process.env.ACCESS_TOKEN_SECRET,
+    'refresh': process.env.REFRESH_TOKEN_SECRET,
+}
+
+const secretKey = process.env.SESSION_SECRET_KEY
 const encodedKey = new TextEncoder().encode(secretKey ? secretKey : "")
 
 export interface SessionPayload extends JWTPayload {
@@ -30,7 +41,24 @@ export async function decrypt(session: string | undefined = '') {
     return payload
   } catch (error) {
     logger.error("Error on decrypt token", {"function_name": decrypt.name, "error": error})
+    throw error
   }
+}
+
+export async function decryptApiTokens<T>(session: string | undefined = '', tokenSecretKey: string = 'access') {
+  const secret = keys[tokenSecretKey]
+
+  if (!secret) {
+    throw new Error('Missing secret')
+  }
+
+  const encodedKey = new TextEncoder().encode(secret ? secret : "")
+  logger.debug("Secret Key Used", {encodedKey: encodedKey, secret: secret})
+
+  const { payload } = await jwtVerify<T>(session, encodedKey, {
+      algorithms: ['HS256'],
+    })
+    return payload
 }
  
 export async function createSession(access_token: string, refresh_token: string | undefined) {

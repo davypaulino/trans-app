@@ -49,5 +49,5 @@ export async function ExternAuthApiMiddleware(request: NextRequest) {
             },
         });
     }
-    return NextResponse.next()
+    return null
 }
