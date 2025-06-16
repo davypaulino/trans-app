@@ -2,12 +2,8 @@ import {NextRequest, NextResponse} from "next/server";
 import {cookies} from "next/headers";
 import {logger} from "@/app/_utils/logger";
 import {decrypt} from "@/app/_lib/session";
-import {Environments} from "@/app/_lib/environments";
 
 export const externApis: (string | undefined)[] = [
-    Environments.Resources.User.NextApi,
-    Environments.Resources.Auth.NextApi,
-    Environments.Resources.Game.NextApi,
     '/apim/'
 ]
 
@@ -38,7 +34,9 @@ export async function ExternAuthApiMiddleware(request: NextRequest) {
             return NextResponse.redirect(loginUrl);
         }
 
-        const requestHeaders = new Headers(request.headers);
+        const requestHeaders = new Headers();
+        requestHeaders.set('X-User-Id', request.headers.get('X-User-Id') as string)
+        requestHeaders.set('X-User-Color', request.headers.get('X-User-Color') as string)
         requestHeaders.set('Authorization', `Bearer ${session?.access_token}`);
         requestHeaders.set('X-Correlation-Id', correlation_id);
 

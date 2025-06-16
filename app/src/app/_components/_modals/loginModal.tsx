@@ -1,20 +1,20 @@
 'use client'
 
-import { Environments } from "@/app/_lib/environments";
 import Link from 'next/link';
 import React from "react";
+import {public_enviroments} from "@/app/_lib/public-envs";
 
 interface LoginProps {
     className?: string
 }
 
 export const LoginModal: React.FC<LoginProps> = (props) => {
-
+    const route = `${public_enviroments["auth"]?.Host}${public_enviroments["auth"]?.http["v1"]}`
     return (
         <div className={`flex flex-col justify-center items-center ${(!(props && props.className) ? "" : props.className)}`}>
             <Link
                 className="flex gap-2 items-center bg-slate-700 text-white px-4 py-2 rounded hover:bg-emerald-400 transition duration-300"
-                href={`${Environments.Resources.Auth.Host}/auth/github`}
+                href={`${route}/auth/github`}
             >
                 <svg
                     className='w-8 h-8'
@@ -29,7 +29,7 @@ export const LoginModal: React.FC<LoginProps> = (props) => {
 
             <Link
                 className="flex gap-2 items-center bg-slate-700 text-white px-4 py-2 rounded hover:bg-emerald-400 transition duration-300 mt-4"
-                href={`${Environments.Resources.Auth.Host}/auth/google`}
+                href={`${route}/auth/google`}
             >
                 <svg
                     className='w-7 h-7'

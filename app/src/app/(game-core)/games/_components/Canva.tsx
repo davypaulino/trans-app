@@ -3,7 +3,7 @@
 import { GameState } from "@/app/_components/_dtos/gameState";
 import { GameRender } from "./GameRender";
 import { useRef, useEffect } from "react";
-import {Environments} from "@/app/_lib/environments";
+import { public_enviroments} from "@/app/_lib/public-envs";
 
 interface PlayersScore {
     [key: string]: { score: number }; 
@@ -30,7 +30,7 @@ export const Canva = ({
 
         const userId = localStorage.getItem("userId");
         const endpoint = `/games/${gameId}/${userId}/`;
-        const socket = new WebSocket(`${Environments.Resources.Game.Ws}${endpoint}`);
+        const socket = new WebSocket(`${public_enviroments["game"]?.Socket}${endpoint}`);
         socketRef.current = socket;
 
         socket.onopen = () => {

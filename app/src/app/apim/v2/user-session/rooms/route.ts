@@ -1,15 +1,15 @@
 import { NextRequest } from 'next/server';
 import {logger} from "@/app/_utils/logger";
-import {Environments} from "@/app/_lib/environments";
+import {enviroments} from "@/app/_lib/environments";
 import {
     HandleProxyError,
     ResponseHandler
 } from "@/app/apim/_utils/responseHandler";
-const BACKEND_BASE_URL = `https://localhost:8443/api/v2/user-session`
+const BACKEND_BASE_URL = `${enviroments["user"]?.Host}${enviroments["user"]?.http["v2"]}`
 
 export async function GET(request: NextRequest) {
     const correlation_id = crypto.randomUUID();
-    const pathname = request.nextUrl.pathname.replace(`/apim/v2/user-session`, "");
+    const pathname = request.nextUrl.pathname.replace(`${enviroments["user"]?.apim["v2"]}`, "");
     const searchParams = request.nextUrl.searchParams.toString();
 
     logger.info("Proxying GET request to external backend.", {
