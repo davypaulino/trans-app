@@ -1,16 +1,16 @@
 //apim/v1/user-session/rooms/route.ts
 import { NextRequest } from 'next/server';
 import {logger} from "@/app/_utils/logger";
-import {Environments} from "@/app/_lib/environments";
+import {enviroments} from "@/app/_lib/environments";
 import {
     HandleProxyError,
     ResponseHandler
 } from "@/app/apim/_utils/responseHandler";
-const BACKEND_BASE_URL = Environments.Resources.User.Host
+const BACKEND_BASE_URL = `${enviroments["user"]?.Host}${enviroments["user"]?.http["v1"]}`;
 
 export async function GET(request: NextRequest) {
     const correlation_id = crypto.randomUUID();
-    const pathname = request.nextUrl.pathname.replace(Environments.Resources.User.NextApi, "");
+    const pathname = request.nextUrl.pathname.replace(`${enviroments["user"]?.apim["v1"]}`, "");
     const searchParams = request.nextUrl.searchParams.toString();
 
     logger.info("Proxying GET request to external backend.", {

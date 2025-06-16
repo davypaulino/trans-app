@@ -38,7 +38,7 @@ export async function ResponseHandler(
         });
     }
 
-    const responseBody = await backendResponse.json(); // Assuming success is always JSON
+    const responseBody = await backendResponse.json();
     logger.info("Successfully proxied request.", { correlation_id, status: backendResponse.status });
 
     return NextResponse.json(responseBody, {

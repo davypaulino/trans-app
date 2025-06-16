@@ -1,11 +1,12 @@
 import { Gateway } from "@/app/_middlewares/middlewareHandler";
-import {Environments} from "@/app/_lib/environments";
+import {public_enviroments} from "@/app/_lib/public-envs";
 
 export const PostStartGame = async (roomCode: string)
 : Promise<Response> => {
+    const route = `${public_enviroments["auth"]?.Host}${public_enviroments["user"]?.http["v1"]}`
 
     const response = await Gateway.Fetch(
-        `${Environments.Resources.User.Host}/rooms/${roomCode}/new-game/`,
+        `${route}/rooms/${roomCode}/new-game/`,
         {
             method: 'POST',
             headers: {

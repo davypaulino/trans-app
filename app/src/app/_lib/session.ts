@@ -53,7 +53,7 @@ export async function decryptApiTokens<T>(session: string | undefined = '', toke
   }
 
   const encodedKey = new TextEncoder().encode(secret ? secret : "")
-  logger.debug("Secret Key Used", {encodedKey: encodedKey, secret: secret})
+  //logger.debug("Secret Key Used", {encodedKey: encodedKey, secret: secret})
 
   const { payload } = await jwtVerify<T>(session, encodedKey, {
       algorithms: ['HS256'],

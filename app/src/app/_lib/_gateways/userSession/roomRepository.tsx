@@ -1,16 +1,18 @@
 import { PaginationResponse } from "@/app/_components/_dtos/paginationResponse"
 import { RequestParamsDto } from "@/app/_components/_dtos/requestParamsDto"
 import { RoomItemDto } from "@/app/_components/_dtos/userSession/roomItemDto"
-import {Environments} from "@/app/_lib/environments";
 import React from "react"
 import { RoomResponseDTO } from "@/app/_components/_dtos/userSession/RoomResponseDTO"
 import { Gateway } from "@/app/_middlewares/middlewareHandler"
 import { ErrorResposeDto } from "@/app/_components/_dtos/userSession/ErrorResponseDto"
+import {public_enviroments} from "@/app/_lib/public-envs";
 
 export const getAllRooms = async (requestParams: RequestParamsDto<string>)
 : Promise<PaginationResponse<RoomItemDto>>  => {
     console.log(requestParams)
-    const data = await fetch(`/apim/v2/user-session/rooms/?page=${requestParams.page}&size=${requestParams?.size ?? 4}&filter=${requestParams.filters ?? ""}`);
+    const route = `${public_enviroments["user"]?.Host}${public_enviroments["user"]?.apim["v1"]}`
+
+    const data = await fetch(`${route}/rooms/?page=${requestParams.page}&size=${requestParams?.size ?? 4}&filter=${requestParams.filters ?? ""}`);
     const posts: PaginationResponse<RoomItemDto> = await data.json()
     return posts; 
 }
@@ -32,7 +34,8 @@ export const putPlayerOnRoom = async (event: React.FormEvent<HTMLFormElement>)
         roomCode: formData.get('roomCode') as string
     }
 
-    const response = await fetch(`${Environments.Resources.User.Host}/rooms/${data.roomCode}/add-player/`, {
+    const route = `${public_enviroments["user"]?.Host}${public_enviroments["user"]?.http["v1"]}`
+    const response = await fetch(`${route}/rooms/${data.roomCode}/add-player/`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
@@ -64,8 +67,10 @@ export const PostCreateARoom = async (event: React.FormEvent<HTMLFormElement>)
         roomName: formData.get('roomName') as string,
         privateRoom: formData.get('isPrivate') === 'true'
     };
+
+    const route = `${public_enviroments["user"]?.Host}${public_enviroments["user"]?.apim["v2"]}`
     const response = await fetch(
-        `/apim/v2/user-session/rooms/new-room/`,
+        `${route}/rooms/new-room`,
         {
             method: 'POST',
             headers: {
@@ -83,7 +88,8 @@ interface UserInfoRequest {
 export const GetNormalRoom = async (roomCode: string): Promise<RoomResponseDTO | ErrorResposeDto> => {
     const userId = localStorage.getItem("userId") ?? "";
 
-    const response = await fetch(`${Environments.Resources.User.Host}/rooms/${roomCode}/detail/`, {
+    const route = `${public_enviroments["user"]?.Host}${public_enviroments["user"]?.http["v1"]}`
+    const response = await fetch(`${route}/rooms/${roomCode}/detail/`, {
         method: 'GET',
         headers: {
             'X-User-Id': `${userId}`,
@@ -94,8 +100,9 @@ export const GetNormalRoom = async (roomCode: string): Promise<RoomResponseDTO |
 };
 
 const DeleteCloseRoom = async (roomCode: string): Promise<void> => {
+    const route = `${public_enviroments["user"]?.Host}${public_enviroments["user"]?.http["v1"]}`
     await Gateway.Fetch(
-        `${Environments.Resources.User.Host}/rooms/${roomCode}/delete`,
+        `${route}/rooms/${roomCode}/delete`,
         {
             method: 'DELETE',
         },
@@ -110,8 +117,9 @@ const PostStartGame = async ():Promise<void> => {
 }
 
 const PutExitRoom = async (roomCode: string, color: number):Promise<void> => {
+    const route = `${public_enviroments["user"]?.Host}${public_enviroments["user"]?.http["v1"]}`
     await Gateway.Fetch(
-        `${Environments.Resources.User.Host}/${roomCode}/${color}/remove-player/`,
+        `${route}/${roomCode}/${color}/remove-player/`,
         {
             method: 'DELETE',
         },

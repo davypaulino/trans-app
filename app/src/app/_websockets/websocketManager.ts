@@ -1,4 +1,4 @@
-import {Environments} from "@/app/_lib/environments";
+import {public_enviroments} from "@/app/_lib/public-envs";
 
 class WebSocketManager {
     private socket: WebSocket | null = null;
@@ -13,7 +13,7 @@ class WebSocketManager {
     ) {
         this.endpoint = endpoint;
         this.path = path;
-        this.host = `${Environments.Resources.User.Host}`;
+        this.host = `${public_enviroments["user"]?.ws["v1"]}`;
         this.connection = `wss://localhost:8443${this.endpoint}${this.path}`
     }
 
