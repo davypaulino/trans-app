@@ -7,6 +7,13 @@ export const dynamic = 'force-dynamic';
 export default async function Page() {
     logger.info("Rendering Server Side", { "Page": "register" })
     const userData = await GetUserInfoGateway()
+
+    if (!userData) {
+        return (
+            <p>Loading...</p>
+        );
+    }
+
     return (
         <CompleteUserRegisterForm userData={userData} />
     );
