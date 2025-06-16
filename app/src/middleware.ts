@@ -111,6 +111,8 @@ export default async function middleware(req: NextRequest) {
     }
   }
 
+  const userOn: boolean = (cookie && accessToken) ? true : false
+
   if (isApimRoute) {
     const externResponse = await ExternAuthApiMiddleware(req)
     if (externResponse) {
@@ -119,15 +121,15 @@ export default async function middleware(req: NextRequest) {
     return NextResponse.next()
   }
 
-  if (isProtectedRoute && !accessToken && !isPublicRoute ) {
+  if (!userOn && isProtectedRoute && !isPublicRoute) {
     return NextResponse.redirect(new URL('/', req.nextUrl))
   }
 
-  if ((isPublicRoute || isProtectedRoute) && !path.startsWith("/register") && accessToken?.status == UserStatus.Pending) {
+  if (userOn && !path.startsWith("/register") && accessToken?.status == UserStatus.Pending) {
     return NextResponse.redirect(new URL('/register', req.nextUrl))
   }
 
-  if ((isPublicRoute || isProtectedRoute) && path.startsWith("/register") && accessToken?.status != UserStatus.Pending) {
+  if (userOn && (path.startsWith("/register") || path === "/") && accessToken?.status != UserStatus.Pending) {
     return NextResponse.redirect(new URL('/home', req.nextUrl))
   }
 

@@ -29,8 +29,9 @@ export const Canva = ({
         const game = new GameRender(canvasRef.current)
 
         const userId = localStorage.getItem("userId");
+        const route = `${public_enviroments["game"]?.Socket}${public_enviroments["game"]?.ws["v1"]}`
         const endpoint = `/games/${gameId}/${userId}/`;
-        const socket = new WebSocket(`${public_enviroments["game"]?.Socket}${endpoint}`);
+        const socket = new WebSocket(`${route}${endpoint}`);
         socketRef.current = socket;
 
         socket.onopen = () => {
