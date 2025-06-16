@@ -5,22 +5,17 @@ import {
     HandleProxyError,
     ResponseHandler
 } from "@/app/apim/_utils/responseHandler";
+import {normalizePathForApis} from "@/app/apim/_utils/normalizePathForPythonApis";
 
 const BACKEND_BASE_URL = `${enviroments["user"]?.Host}${enviroments["user"]?.http["v2"]}`
 
 export async function POST(request: NextRequest) {
     const correlation_id = request.headers.get('X-Correlation-Id') as string;
-
-    const pathname = request.nextUrl.pathname.replace(`${enviroments["user"]?.apim["v2"]}`, "");
-    const searchParams = request.nextUrl.searchParams.toString();
-    const normalizedPathname = pathname.endsWith('/') ? pathname : pathname + '/';
-    const backendEndpoint = `${BACKEND_BASE_URL}${normalizedPathname}${searchParams ? `?${searchParams}` : ''}`;
+    const routeUrl = normalizePathForApis(BACKEND_BASE_URL, request)
 
     logger.info("Proxying POST request to external backend.", {
         correlation_id,
-        pathname,
-        searchParams,
-        backend_base_url: backendEndpoint
+        route: routeUrl
     });
 
     try {
@@ -29,14 +24,14 @@ export async function POST(request: NextRequest) {
 
         const sendData = await request.json()
 
-        const backendResponse = await fetch(backendEndpoint, {
+        const backendResponse = await fetch(routeUrl, {
             method: 'POST',
             headers: headers,
             body: JSON.stringify(sendData)
         });
 
-        return await ResponseHandler(backendResponse, {correlation_id})
+        return await ResponseHandler(backendResponse, { correlation_id, routeUrl })
     } catch (error: any) {
-        return HandleProxyError(error, { correlation_id })
+        return HandleProxyError(error, { correlation_id, routeUrl })
     }
 }

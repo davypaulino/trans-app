@@ -6,7 +6,7 @@ export const PostStartGame = async (roomCode: string)
     const route = `${public_enviroments["auth"]?.Host}${public_enviroments["user"]?.http["v1"]}`
 
     const response = await Gateway.Fetch(
-        `${route}/rooms/${roomCode}/new-game/`,
+        `${route}/games/${roomCode}/new-game/`,
         {
             method: 'POST',
             headers: {

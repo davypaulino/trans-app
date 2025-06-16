@@ -25,15 +25,18 @@ export const PostCreateRoomForm: React.FC<PostProps> = (props) => {
         const response = await PostCreateARoom(event);
         const responseData = await response.json(); // Parse response JSON
 
-        // Store 'X-User-Id' in localStorage
         const userId = response.headers.get("X-User-Id");
+        const userColor = response.headers.get("X-User-Color");
         if (userId) {
             localStorage.setItem("userId", userId);
         }
-    
-        // Use Next.js router for navigation
+
+        if (userColor) {
+            localStorage.setItem("userColor", userColor);
+        }
+
         if (responseData?.roomCode) {
-            router.push(`/rooms/${responseData.roomCode}`); // Navigate dynamically
+            router.push(`/rooms/${responseData.roomCode}`);
         }
     };
 

@@ -78,6 +78,7 @@ export const PostCreateARoom = async (event: React.FormEvent<HTMLFormElement>)
             },
             body: JSON.stringify(data)
         })
+
     return response;
 };
 
@@ -119,7 +120,7 @@ const PostStartGame = async ():Promise<void> => {
 const PutExitRoom = async (roomCode: string, color: number):Promise<void> => {
     const route = `${public_enviroments["user"]?.Host}${public_enviroments["user"]?.http["v1"]}`
     await Gateway.Fetch(
-        `${route}/${roomCode}/${color}/remove-player/`,
+        `${route}/rooms/${roomCode}/${color}/remove-player/`,
         {
             method: 'DELETE',
         },

@@ -64,7 +64,7 @@ export default function Page() {
             setWsConnected(false)
             console.error("WebSocket error:", error);
         };
-    }, [params.room_id]); // Runs when room_id changes
+    }, [params.room_id]);
 
     return (
         <section className="container mx-auto w-[80vw] bg-slate-300 rounded-b-lg p-6">

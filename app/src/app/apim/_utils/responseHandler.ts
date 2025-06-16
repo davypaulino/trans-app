@@ -3,13 +3,13 @@ import { logger } from '@/app/_utils/logger';
 
 interface ProxyResponseHandlerOptions {
     correlation_id: string;
+    routeUrl?: string;
 }
 
 export async function ResponseHandler(
     backendResponse: Response,
     options: ProxyResponseHandlerOptions
 ): Promise<NextResponse> {
-    const { correlation_id } = options;
     const responseHeaders = new Headers(backendResponse.headers);
 
     responseHeaders.delete('content-encoding');
@@ -22,11 +22,11 @@ export async function ResponseHandler(
             errorData = await backendResponse.json();
         } catch (e) {
             errorData = await backendResponse.text();
-            logger.warn("Backend error response was not JSON.", { correlation_id, error: e });
+            logger.warn("Backend error response was not JSON.", { options, error: e });
         }
 
         logger.warn("Backend responded with an error.", {
-            correlation_id,
+            options,
             status: backendResponse.status,
             statusText: backendResponse.statusText,
             errorData
@@ -39,7 +39,7 @@ export async function ResponseHandler(
     }
 
     const responseBody = await backendResponse.json();
-    logger.info("Successfully proxied request.", { correlation_id, status: backendResponse.status });
+    logger.info("Successfully proxied request.", { options, status: backendResponse.status, responseHeaders });
 
     return NextResponse.json(responseBody, {
         status: backendResponse.status,
@@ -48,9 +48,8 @@ export async function ResponseHandler(
 }
 
 export function HandleProxyError(error: any, options: ProxyResponseHandlerOptions): NextResponse {
-    const { correlation_id } = options;
     logger.error("Error during proxy request to external backend:", {
-        correlation_id,
+       options,
         error_message: error.message,
         error_stack: error.stack
     });
