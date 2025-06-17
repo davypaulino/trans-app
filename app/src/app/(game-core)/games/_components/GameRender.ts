@@ -1,3 +1,5 @@
+"use client"
+
 import { Ball, FieldAttributes, GameState, Player } from "@/app/_components/_dtos/gameState";
 
 class Board {
@@ -13,7 +15,6 @@ class Board {
         this.canvas = canvas;
         this.canvas.width = this.width;
         this.canvas.height = this.height;
-        document.body.appendChild(this.canvas);
 
         this.ctx = this.canvas.getContext("2d");
     }
@@ -92,10 +93,7 @@ export class GameRender {
     ball: BallModel;
     scale: Scale;
 
-    constructor(canvas: HTMLCanvasElement | null) {
-        if (canvas == null) {
-            canvas = document.createElement("canvas");
-        }
+    constructor(canvas: HTMLCanvasElement) {
         this.board = new Board(700, 400, canvas);
         this.leftPaddle = new Paddle(0, 0, "blue");
         this.rightPaddle = new Paddle(0, 0, "red");

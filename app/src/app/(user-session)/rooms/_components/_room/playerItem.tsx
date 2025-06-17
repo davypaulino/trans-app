@@ -31,10 +31,10 @@ export const PlayerItem: React.FC<PlayeritemProps> = (
             <div className={`flex items-center gap-2`}>
                 <img 
                 src={player.urlProfileImage} 
-                alt='oi'
+                alt={player.name}
                 className={`w-10 h-10 rounded-full object-cover border-4 ${border}`}
                 />
-                <div>
+                <div className={`text-slate-800`}>
                     <p className="text-sm text-bold">{player.name}</p>
                     <div className="text-xs flex gap-2 items-center">
                         <p>{EPrimaryColors[player.color]}</p> |

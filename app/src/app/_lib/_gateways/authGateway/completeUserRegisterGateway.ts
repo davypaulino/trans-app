@@ -6,8 +6,9 @@ import {enviroments} from "@/app/_lib/environments";
 import {CompleteUserRegisterRequestDto} from "@/app/_features/completeUserRegister/completeUserRegisterRequestDto";
 import CompleteUserRegisterResponseDto from "@/app/_features/completeUserRegister/completeUserRegisterResponseDto";
 import {logger} from "@/app/_utils/logger";
+import {ErrorResponse} from "@/app/_utils/ErrorResponse";
 
-export async function PutCompleUserRegister(data: CompleteUserRegisterRequestDto): Promise<CompleteUserRegisterResponseDto | null> {
+export async function PutCompleUserRegister(data: CompleteUserRegisterRequestDto): Promise<CompleteUserRegisterResponseDto | ErrorResponse> {
     const correlation_id = crypto.randomUUID()
     const route = `${enviroments["auth"]?.Host}${enviroments["auth"]?.http["v1"]}`
 
@@ -17,13 +18,13 @@ export async function PutCompleUserRegister(data: CompleteUserRegisterRequestDto
         const cookie = (await cookies()).get('session')?.value
         if (!cookie) {
             logger.warn("Cookie not found.", {user_id: data.userId, correlation_id: correlation_id, route: route})
-            return null;
+            return {status: 404, message: "Unauthorized"};
         }
 
         const session = await decrypt(cookie)
         if (!session) {
             logger.error("Not possible decrypt session", {user_id: data.userId, correlation_id: correlation_id, route})
-            return null;
+            return {status: 404, message: "Unauthorized"};
         }
 
         const response = await fetch(`${route}/register`, {
@@ -42,7 +43,7 @@ export async function PutCompleUserRegister(data: CompleteUserRegisterRequestDto
             } else if (response.status >= 500 && response.status <= 599) {
                 logger.error("Error on Put User Information", {"correlation_id": correlation_id, "user_id": data.userId, "status_code": response.statusText, route: route, "response_body": response.body})
             }
-            return null;
+            return {status: response.status, message: response.json().toString()};
         }
 
         const content = response.json()
@@ -50,6 +51,6 @@ export async function PutCompleUserRegister(data: CompleteUserRegisterRequestDto
         return content;
     } catch (error) {
         logger.error("Error on Try PutCompleUserRegister", {"error": error, "correlation_id": correlation_id, route: route})
-        return null;
+        return {status: 500, message: "Internal Server Error"};
     }
 }

@@ -2,7 +2,7 @@
 
 import { GameState } from "@/app/_components/_dtos/gameState";
 import { GameRender } from "./GameRender";
-import { useRef, useEffect } from "react";
+import React, {useRef, useEffect, ReactElement, Children, isValidElement, Dispatch, SetStateAction} from "react";
 import { public_enviroments} from "@/app/_lib/public-envs";
 
 interface PlayersScore {
@@ -14,19 +14,28 @@ interface CanvaProps {
     setActualGamaState: (data: GameState | null) => void;
     setScoreboard: (data: PlayersScore) => void;
     gameId: string;
+    setGameFinish: Dispatch<SetStateAction<boolean>>
 }
 
 export const Canva = ({
         actualGamaState,
         setActualGamaState,
         setScoreboard,
-        gameId
+        gameId,
+        setGameFinish
     } : CanvaProps) => {
     const socketRef = useRef<WebSocket | null>(null);
-    const canvasRef = useRef<HTMLCanvasElement>(null);
+    const boardGameRef = useRef<HTMLCanvasElement>(null);
 
     useEffect(() => {
-        const game = new GameRender(canvasRef.current)
+        const canvas = boardGameRef.current
+
+        if (!canvas) {
+            console.warn("Canva useEffect: Canvas element is not yet available.");
+            return;
+        }
+
+        const game = new GameRender(canvas)
 
         const userId = localStorage.getItem("userId");
         const route = `${public_enviroments["game"]?.Socket}${public_enviroments["game"]?.ws["v1"]}`
@@ -47,12 +56,12 @@ export const Canva = ({
             if (data.type === "game.update") {
                 if (actualGamaState === null)
                     setActualGamaState(data.game_state)
-                game.update(JSON.parse(data.game_state));
+                game?.update(JSON.parse(data.game_state));
                 setActualGamaState(data.game_state)
             }
 
             if (data.type === "game_finished") {
-                //showModal(data.winner)
+                setGameFinish(true);
             }
 
             if (data.type === "update_score") {
@@ -70,6 +79,7 @@ export const Canva = ({
         };
 
         const handleKeydown = (e: KeyboardEvent) => {
+            console.log("handleKeydown", 82);
             if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
                 socketRef.current.send(JSON.stringify({
                     direction: e.key,
@@ -84,11 +94,23 @@ export const Canva = ({
             window.removeEventListener("keydown", handleKeydown);
             socketRef.current?.close();
         };
-    }, []);
+    }, [gameId]);
 
     return (
-        <div>
-            <canvas className="mx-auto" ref={canvasRef} style={{ display: "block" }} />
+        <div className="flex justify-center items-center">
+            <canvas
+                ref={boardGameRef}
+                width={700}
+                height={400}
+                className="mx-auto"
+                style={{
+                    display: 'block',
+                    border: '4px solid #333',
+                    backgroundColor: '#3564f0'
+                }}
+            >
+                Seu navegador não suporta o elemento canvas.
+            </canvas>
         </div>
     );
 }

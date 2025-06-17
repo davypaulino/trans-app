@@ -7,7 +7,7 @@ import { ScoreBoard } from "./ScoreBoard";
 import { GameFinish } from "./GameFinish";
 import { GameState } from "@/app/_components/_dtos/gameState";
 import { Canva } from "./Canva";
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useRef, useState} from "react";
 import { useParams } from "next/navigation";
 
 interface PlayersScore {
@@ -16,8 +16,10 @@ interface PlayersScore {
 
 export const Board: React.FC = () => {
     const params = useParams();
+    const gameId = params.game_id as string;
     const [roomData, setRoomData] = useState<RoomResponseDTO | null>(null);
     const [actualGamaState, setActualGamaState] = useState<GameState | null>(null)
+    const [gameFinish, setGameFinish] = useState<boolean>(false)
     const [scoreboard, setScoreboard] = useState<PlayersScore>({
         "1": { score: 0 },
         "2": { score: 0 }
@@ -39,7 +41,7 @@ export const Board: React.FC = () => {
         }
 
         fetchRoom();
-    }, []);
+    }, [gameId]);
 
     return (
         <>
@@ -47,11 +49,19 @@ export const Board: React.FC = () => {
                 actualGamaState={actualGamaState}
                 setActualGamaState={setActualGamaState}
                 setScoreboard={setScoreboard}
-                gameId={params.game_id as string}  />
+                gameId={gameId}
+                setGameFinish={setGameFinish}/>
             <div className="flex mt-2">
                 <ScoreBoard playerScoreOne={scoreboard["1"]?.score} playerScoreTwo={scoreboard["2"]?.score} match={roomData ?? null} />
             </div>
-            <GameFinish roomData={roomData} setRoomData={setRoomData} playerOneScore={scoreboard["1"]?.score} playerTwoScore={scoreboard["2"]?.score}/>
+            <GameFinish
+                roomData={roomData}
+                setRoomData={setRoomData}
+                playerOneScore={scoreboard["1"]?.score}
+                playerTwoScore={scoreboard["2"]?.score}
+                gameFinish={gameFinish}
+                setGameFinish={setGameFinish}
+            />
         </>
     );
 }

@@ -4,7 +4,8 @@ import {
     PaintBrushIcon,
     PlayIcon,
     BookOpenIcon,
-} from '@heroicons/react/24/outline'
+} from '@heroicons/react/24/outline';
+import {NextResponse} from "next/server";
 
 interface INavOptionSideItem {
     name: string;
@@ -22,6 +23,7 @@ interface INavOptionItem {
 interface INavItem {
     name: string,
     href?: string | null,
+    onclick?: () => void,
     options?: INavOptionItem[] | null
     sideOptions?: INavOptionSideItem[] | null
 }
@@ -76,6 +78,17 @@ export const NavItems: INavItem[] = [
     {
         name: "Ranking",
         href: "/ranking",
+        options: null,
+        sideOptions: null
+    },
+    {
+        name: "Logout",
+        onclick: async () => {
+            await fetch("/apim/logout", {
+                method: "GET",
+            })
+            window.location.reload()
+        },
         options: null,
         sideOptions: null
     }

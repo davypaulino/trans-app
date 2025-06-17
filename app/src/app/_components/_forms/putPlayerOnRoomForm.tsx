@@ -27,6 +27,11 @@ export const PutPlayerOnRoomForm: React.FC<PutProps> = (props) => {
         if (userId) {
             localStorage.setItem("userId", userId);
         }
+
+        const userColor = response.headers.get("X-User-Color");
+        if (userColor) {
+            localStorage.setItem("userColor", userColor);
+        }
     
         if (responseData?.roomCode) {
             router.push(`/rooms/${responseData.roomCode}`);

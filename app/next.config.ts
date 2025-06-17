@@ -13,6 +13,11 @@ const config = {
       ],
     }
   },
+  images: {
+    domains: [
+        "avatars.githubusercontent.com"
+    ],
+  },
   output: 'standalone',
 }
 

@@ -10,7 +10,7 @@ import {public_enviroments} from "@/app/_lib/public-envs";
 export const getAllRooms = async (requestParams: RequestParamsDto<string>)
 : Promise<PaginationResponse<RoomItemDto>>  => {
     console.log(requestParams)
-    const route = `${public_enviroments["user"]?.Host}${public_enviroments["user"]?.apim["v1"]}`
+    const route = `${public_enviroments["user"]?.apim["v2"]}`
 
     const data = await fetch(`${route}/rooms/?page=${requestParams.page}&size=${requestParams?.size ?? 4}&filter=${requestParams.filters ?? ""}`);
     const posts: PaginationResponse<RoomItemDto> = await data.json()
@@ -18,7 +18,6 @@ export const getAllRooms = async (requestParams: RequestParamsDto<string>)
 }
 
 interface PutPlayerOnRoomRequest {
-    playerName: string,
     roomCode: string,
 }
 
@@ -30,11 +29,10 @@ export const putPlayerOnRoom = async (event: React.FormEvent<HTMLFormElement>)
     const userId = localStorage.getItem("userId") ?? "";
 
     const data: PutPlayerOnRoomRequest = {
-        playerName: formData.get('nickname') as string,
         roomCode: formData.get('roomCode') as string
     }
 
-    const route = `${public_enviroments["user"]?.Host}${public_enviroments["user"]?.http["v1"]}`
+    const route = `${public_enviroments["user"]?.apim["v2"]}`
     const response = await fetch(`${route}/rooms/${data.roomCode}/add-player/`, {
         method: 'PUT',
         headers: {
@@ -68,7 +66,7 @@ export const PostCreateARoom = async (event: React.FormEvent<HTMLFormElement>)
         privateRoom: formData.get('isPrivate') === 'true'
     };
 
-    const route = `${public_enviroments["user"]?.Host}${public_enviroments["user"]?.apim["v2"]}`
+    const route = `${public_enviroments["user"]?.apim["v2"]}`
     const response = await fetch(
         `${route}/rooms/new-room`,
         {

@@ -5,6 +5,7 @@ import { FingerPrintIcon, PuzzlePieceIcon } from '@heroicons/react/24/outline';
 import { ModalComponent } from "@/app/_components/modal";
 import { PostCreateRoomForm } from "@/app/_components/_forms/postCreateRoomForm";
 import {LoginModal} from "@/app/_components/_modals/loginModal";
+import Link from "next/link";
 
 export const BtnLogin = () => {
     const [loginisOpen, setLoginisOpen] = useState<boolean>(false);
@@ -37,8 +38,11 @@ export const BtnEnterInRoom = () => {
               onClick={() => setCreateRoomModal(true)}
               className="rounded-md bg-emerald-600 px-13.5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-emerald-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600"
             >
-              Play
+              Create Romm
             </button>
+            <Link href="/rooms">
+                Enter Room
+            </Link>
             <ModalComponent
                 title="Create a Room"
                 open={createRoomModalIsOpen}

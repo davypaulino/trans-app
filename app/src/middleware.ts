@@ -53,6 +53,11 @@ export default async function middleware(req: NextRequest) {
   let accessToken: JwtSessionPayload | null = null
   const cookie = (await cookies()).get('session')?.value
 
+  if (true) {
+    NextResponse.next()
+  }
+
+
   if (!isApimRoute && !cookie) {
     const hasToken = await TryGetToken(req)
     if (hasToken) {

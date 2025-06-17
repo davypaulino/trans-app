@@ -12,7 +12,6 @@ interface ResourceOptions {
     apim: {
         [key: string]: string;
     }
-
 }
 
 export const enviroments: EnvironmentOptions = {

@@ -3,12 +3,18 @@
 import { cookies } from "next/headers";
 import {decrypt} from "@/app/_lib/session";
 import { decodeJwt } from "jose";
-import { JwtSessionPayload } from "@/middleware";
+//import { JwtSessionPayload } from "@/middleware.tx";
 import {enviroments} from "@/app/_lib/environments";
 import {logger} from "@/app/_utils/logger";
 import {handleStatusError} from "@/app/_lib/_gateways/utils/handleStatusError";
+import {JWTExpired} from "jose/errors";
+import {UserDataResponse} from "@/app/_features/completeUserRegister/completeUserRegisterResponseDto";
 
-export async function GetUserInfoGateway() : Promise<Response | null> {
+interface JwtSessionPayload extends JWTExpired {
+    nickname: string;
+}
+
+export async function GetUserInfoGateway() : Promise<UserDataResponse | null> {
     const correlation_id = crypto.randomUUID()
     let route = `${enviroments["auth"]?.Host}${enviroments["auth"]?.http["v1"]}`
 

@@ -7,6 +7,7 @@ import {
 import { Bars3Icon } from '@heroicons/react/24/outline'
 import { NavItems } from "../_lib/_nav/navOptions";
 import { NavPopoverComponent } from "./navPopover";
+import {Button} from "@/app/_components/_basic/Button";
 
 export const NavComponent = () => {
     return (
@@ -34,8 +35,10 @@ export const NavComponent = () => {
 
             <PopoverGroup className="hidden lg:flex lg:gap-x-12">
                 {NavItems.map((item, index) => (
-                    item.href === null ?
-                    <NavPopoverComponent key={`nav-item-${index}`} item={item} />
+                    !item.href ?
+                        !item.onclick ?
+                        <NavPopoverComponent key={`nav-item-${index}`} item={item} />
+                        : <Button key={`nav-item-${index}`} onClick={item.onclick}>{item.name}</Button>
                     : <Link key={`nav-item-${index}`} href={item.href ?? ""} className="text-sm/6 font-semibold text-gray-900 dark:text-gray-200">
                         {item.name}
                     </Link>

@@ -2,7 +2,7 @@
 
 import { ModalComponent } from "@/app/_components/modal";
 import PlayerScoreModal from "./PlayerScoreModal"
-import { ComponentType, SVGProps, useEffect, useState } from "react";
+import {ComponentType, Dispatch, SetStateAction, SVGProps, useEffect, useState} from "react";
 import { StarIcon } from "@heroicons/react/24/outline";
 import { RoomResponseDTO } from "@/app/_components/_dtos/userSession/RoomResponseDTO";
 import { ErrorResposeDto } from "@/app/_components/_dtos/userSession/ErrorResponseDto";
@@ -20,16 +20,23 @@ interface GameFinishProps {
     roomData: RoomResponseDTO | null;
     setRoomData: (data: RoomResponseDTO | null) => void;
     playerOneScore: number,
-    playerTwoScore: number
+    playerTwoScore: number,
+    gameFinish: boolean;
+    setGameFinish: Dispatch<SetStateAction<boolean>>;
 }
 
-export const GameFinish = ({roomData, setRoomData, playerOneScore, playerTwoScore}: GameFinishProps) => {
+export const GameFinish = ({
+       roomData,
+       setRoomData,
+       playerOneScore,
+       playerTwoScore,
+       gameFinish,
+       setGameFinish}: GameFinishProps) => {
     const mockGameFinishResult = {
         title: "Você Venceu",
         icon: StarIcon,
     };
 
-    const [gameFinish, setGameFinish] = useState<boolean>(false)
     const [gameFinishResult, setGameFinishResult] = useState<GameFinish>(mockGameFinishResult)
     
     const isRoomResponseDTO = (response: any): response is RoomResponseDTO => {
@@ -54,9 +61,10 @@ export const GameFinish = ({roomData, setRoomData, playerOneScore, playerTwoScor
                 icon: (winner === localStorage.getItem("userId") as string) ? StarIcon : FaceFrownIcon,
             });
 
-            showModal(localStorage.getItem("userId") as string)
             setGameFinish(true)
         }
+        if (gameFinish)
+            showModal(localStorage.getItem("userId") as string)
     }, [gameFinish])
 
     return (
